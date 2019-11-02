@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>Complex Functions</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.2.2/math.min.js"></script>
+
+    <style>
+      .plot {
+        border: solid black 2px;
+        box-sizing: content-box;
+        margin: 10px;
+      }
+
+      #domain {
+        border-color: red;
+      }
+
+      #image {
+        border-color: blue;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Complex Functions</h1>
+
+    <canvas class="plot" id="domain" width=400px height=400px></canvas>
+    <canvas class="plot" id="image"  width=400px height=400px></canvas> 
+    <p>z = <span id="z">0</span></p>
+    <script type="text/javascript" src="plot.js"></script>
+  </body>
+</html>

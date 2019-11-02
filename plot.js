@@ -20,7 +20,11 @@ class Plot {
     this.listen    = listen // Plot from which this one obtains the value of z
     this.listeners = []     // List of plots that listen to the value of z in this one
 
-    this.func = func
+    if (typeof func == 'string') {
+      this.func = math.compile(func)
+    }
+    else 
+      this.func = func
 
     this.canvas.addEventListener('mousemove', event => {
       const { offsetX: x, offsetY: y } = event
@@ -34,7 +38,7 @@ class Plot {
           if (this.listen) break
           this.drawGrid()
           this.drawVector(x, y)
-          this.z = this.getNumber({x, y})
+          this.updateZ(this.getNumber({x, y}))
           zSpan.textContent = `${this.z.a} + ${this.z.b}i`
           break
         case 2:
@@ -141,6 +145,28 @@ class Plot {
     return { a: (x - this.ox) / this.sx, b: (this.oy - y) / this.sy }
   }
 
+  updateZ(z) {
+    this.z = z
+    if (!this.listen) zSpan.textContent = `${z.a} + ${z.b}i`
+    for (const listener of this.listeners)
+      listener.passZ(z)
+
+    this.drawGrid()
+    this.drawZ()
+  }
+
+  passZ(z) {
+    if (!this.func) {
+      this.updateZ(z)
+      return
+    }
+    
+    const complexZ = math.complex(z.a, z.b)
+    const complexW = this.func.evaluate({ z: complexZ })
+    const w = { a: complexW.re, b: complexW.im }
+    this.updateZ(w)
+  }
+
   drawZ() {
     if (!this.z) return
     const {x, y} = this.locateNumber(this.z)
@@ -162,4 +188,4 @@ class Plot {
 const domainCanv = document.getElementById('domain')
 const domainPlot = new Plot(domainCanv)
 const imageCanv = document.getElementById('image')
-const imagePlot = new Plot(imageCanv, domainPlot)
+const imagePlot = new Plot(imageCanv, domainPlot, '1/z')

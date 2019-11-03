@@ -47,10 +47,10 @@
       animateButton = document.getElementById('animate')
 
       const
-      c          = new Contour('c', 'e^(i*t)', 't', 0, 2*Math.PI, 100, 40),
+      c          = new Contour('c', '1/2+e^(i*t)', 't', 0, 2*Math.PI, 100, 40),
       z          = new Variable('z', 'red', undefined, [c]),
       w          = new Variable('w', 'darkOrange', '1/z', [z]),
-      wdc        = new Variable('wdc', 'brown', 'w * dc', [w, c.dVar])
+      wdc        = new Variable('wdc', 'brown', `${c.stepSize} * w * dc`, [w, c.dVar])
       domainPlot = new Plot(domainCanv, [c, z]),
       imagePlot  = new Plot(imageCanv, [c.dVar, w, wdc]),
       displayZ   = new Display(zSpan, z),
@@ -58,7 +58,7 @@
 
       dResetButton.onclick  = () => domainPlot.resetView()
       iResetButton.onclick  = () => imagePlot.resetView()
-      animateButton.onclick = () => c.animate()
+      animateButton.onclick = () => c.animate(true)
     </script>
 
   </body>

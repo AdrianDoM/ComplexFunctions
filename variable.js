@@ -27,7 +27,7 @@ class Variable {
 
     plot.ctx.strokeStyle = this.color
     plot.ctx.lineCap = 'round'
-    plot.lineWidth = 2
+    plot.ctx.lineWidth = 4
 
     plot.ctx.beginPath()
     plot.ctx.moveTo(plot.ox, plot.oy)

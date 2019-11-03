@@ -2,15 +2,17 @@
 
 class Display {
 
-  constructor(htmlElem, listen) {
+  constructor(htmlElem, talker) {
     this.htmlElem = htmlElem
-    this.listen   = listen
-    this.listen.listeners.push(this)
+    this.talker   = talker
+    this.talker.listeners.push(this)
   }
 
-  passZ(z, talker) {
-    if (talker == this.listen)
-      this.htmlElem.textContent = z.toString()
+  varUpdate(talker) {
+    if (talker == this.talker)
+      this.htmlElem.textContent = talker.value == undefined ? '-' : talker.value.toString()
+    else
+      throw new Error('Received update from unregistered talker.')
   }
 
 }

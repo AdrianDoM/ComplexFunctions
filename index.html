@@ -3,9 +3,10 @@
     <title>Complex Functions</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.2.2/math.min.js"></script>
+    <script type="text/javascript" src="variable.js"></script>
+    <script type="text/javascript" src="contour.js"></script>
     <script type="text/javascript" src="plot.js"></script>
     <script type="text/javascript" src="display.js"></script>
-    <script type="text/javascript" src="contour.js"></script>
 
     <style>
       .plot {
@@ -30,26 +31,35 @@
     <canvas class="plot" id="domain" width=400px height=400px></canvas>
     <canvas class="plot" id="image"  width=400px height=400px></canvas>
 
+    <p><button id="domainReset">Reset view</button> z = <span id="z">-</span></p>
+    <p><button id="imageReset">Reset view</button> f(z) = <span id="w">-</span></p>
+    
+    <p><button id="animate">Animate contour</button></p>
+
     <script>
       const
       domainCanv = document.getElementById('domain'),
-      domainPlot = new Plot(domainCanv),
-      imageCanv = document.getElementById('image'),
-      imagePlot = new Plot(imageCanv, domainPlot, '1/z')
-    </script>
+      imageCanv  = document.getElementById('image'),
+      zSpan      = document.getElementById('z'),
+      wSpan      = document.getElementById('w'),
+      dResetButton  = document.getElementById('domainReset'),
+      iResetButton  = document.getElementById('imageReset'),
+      animateButton = document.getElementById('animate')
 
-    <p><button onclick="domainPlot.resetView()">Reset view</button> z = <span id="z">-</span></p>
-    <p><button onclick="imagePlot.resetView()">Reset view</button> f(z) = <span id="w">-</span></p>
-    
-    <script>
       const
-      zSpan = document.getElementById('z'),
-      displayZ = new Display(zSpan, domainPlot),
-      wSpan = document.getElementById('w'),
-      displayW = new Display(wSpan, imagePlot),
-      contour = new Contour('e^(i*t)', 't', [domainPlot], [domainPlot], 0, 2*Math.PI, 100)
+      c          = new Contour('c', 'e^(i*t)', 't', 0, 2*Math.PI, 100, 40),
+      z          = new Variable('z', 'red', undefined, [c]),
+      w          = new Variable('w', 'darkOrange', '1/z', [z]),
+      wdc        = new Variable('wdc', 'brown', 'w * dc', [w, c.dVar])
+      domainPlot = new Plot(domainCanv, [c, z]),
+      imagePlot  = new Plot(imageCanv, [c.dVar, w, wdc]),
+      displayZ   = new Display(zSpan, z),
+      displayW   = new Display(wSpan, w)
+
+      dResetButton.onclick  = () => domainPlot.resetView()
+      iResetButton.onclick  = () => imagePlot.resetView()
+      animateButton.onclick = () => c.animate()
     </script>
 
-    <p><button onclick="contour.animate()">Animate contour</button></p>
   </body>
 </html>

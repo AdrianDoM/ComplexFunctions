@@ -2,7 +2,7 @@
 
 class Plot {
 
-  constructor(canvas, listen, func, contour, originX, originY, scaleX, scaleY) {
+  constructor(canvas, talkers=[], originX, originY, scaleX, scaleY) {
     this.canvas = canvas
     this.ctx    = canvas.getContext('2d', { alpha: false })
     this.width  = canvas.width
@@ -14,14 +14,9 @@ class Plot {
     this.sx     = scaleX  == undefined ? this.width  / 5 : scaleX
     this.sy     = scaleY  == undefined ? this.sx         : scaleY
 
-    if (listen) listen.listeners.push(this)
-    this.listen    = listen // Plot from which this one obtains the value of z
-    this.listeners = []     // List of elements that listen to the value of z in this one
-
-    if (typeof func == 'string') this.func = math.compile(func)
-    else this.func = func
-
-    this.contour = contour
+    this.talkers = talkers
+    for (const talker of this.talkers)
+      talker.addListener(this)
 
     this.canvas.addEventListener('mousemove', e => this.mousemoveHandler(e) )
     this.canvas.addEventListener('mousedown', e => this.mousedownHandler(e) )
@@ -32,8 +27,8 @@ class Plot {
 
   draw() {
     this.drawGrid()
-    if (this.contour) this.contour.draw(this)
-    if (this.z) this.drawZ()
+    for (const talker of this.talkers)
+      talker.draw(this)
   }
 
   drawGrid() {
@@ -91,52 +86,12 @@ class Plot {
     this.ctx.fill()
   }
 
-  drawVector({x, y}) {
-    this.ctx.strokeStyle = '#ff0000'
-    this.ctx.lineCap = 'round'
-    this.ctx.lineWidth = 2
-    this.ctx.beginPath()
-    this.ctx.moveTo(this.ox, this.oy)
-    this.ctx.lineTo(x, y)
-    this.ctx.stroke()
-
-    this.ctx.fillStyle = '#ff0000'
-    this.ctx.beginPath()
-    this.ctx.arc(x, y, 4, 0, 2 * Math.PI)
-    this.ctx.fill()
-  }
-
   locateNumber({re, im}) {
     return { x: this.ox + re * this.sx, y: this.oy - im * this.sy }
   }
 
   getNumber({x, y}) {
     return math.complex((x - this.ox) / this.sx, (this.oy - y) / this.sy)
-  }
-
-  updateZ(z) {
-    this.z = z
-    for (const listener of this.listeners)
-      listener.passZ(z, this)
-
-    this.draw()
-  }
-
-  passZ(z, talker) {
-    if (talker != this.listen) return
-
-    if (!this.func)
-      this.updateZ(z)
-    else {
-      const w = this.func.evaluate({z: z})
-      this.updateZ(w)
-    }
-  }
-
-  drawZ() {
-    if (!this.z) return
-    const pos = this.locateNumber(this.z)
-    this.drawVector(pos)
   }
 
   resetView() {
@@ -157,9 +112,9 @@ class Plot {
         break
       case 1:
         // left button
-        if (this.listen) break
-        this.updateZ(this.getNumber({x, y}))
-        this.draw()
+        // if (this.listen) break
+        // this.updateZ(this.getNumber({x, y}))
+        // this.draw()
         break
       case 2:
           // right button
@@ -177,6 +132,10 @@ class Plot {
     switch (event.button) {
       case 0:
         // left button
+        // const { offsetX: x, offsetY: y } = event
+        // if (this.listen) break
+        // this.updateZ(this.getNumber({x, y}))
+        // this.draw()
         break
       case 1:
         // middle button
@@ -208,10 +167,29 @@ class Plot {
     this.draw()
   }
 
-  updateListen(newListen) {
-    if (this.listen && this.listen != newListen) // Remove from previous listen's listeners list
-      this.listen.listeners.filter( obj => obj != this )
-    this.listen = newListen
+  addTalker(talker) {
+    if (!this.talkers.includes(talker))
+      this.talkers.push(talker)
+    talker.addListener(this)
+  }
+
+  removeTalker(talker) {
+    const i = this.talkers.indexOf(talker)
+    if (i < 0) throw new Error('Talker not found.')
+    else {
+      this.talkers.splice(i, 1)
+      talker.removeListener(this)
+    }
+  }
+
+  varUpdate(talker) {
+    if (!this.talkers.includes(talker))
+      throw new Error('Received update from unregistered talker.')
+    this.draw()
+  }
+
+  contourUpdate(talker) {
+
   }
 
 }

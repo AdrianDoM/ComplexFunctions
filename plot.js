@@ -1,10 +1,8 @@
 "use strict"
 
-const zSpan = document.getElementById('z')
-
 class Plot {
 
-  constructor(canvas, listen, func, originX, originY, scaleX, scaleY) {
+  constructor(canvas, listen, func, contour, originX, originY, scaleX, scaleY) {
     this.canvas = canvas
     this.ctx    = canvas.getContext('2d', { alpha: false })
     this.width  = canvas.width
@@ -18,59 +16,24 @@ class Plot {
 
     if (listen) listen.listeners.push(this)
     this.listen    = listen // Plot from which this one obtains the value of z
-    this.listeners = []     // List of plots that listen to the value of z in this one
+    this.listeners = []     // List of elements that listen to the value of z in this one
 
-    if (typeof func == 'string') {
-      this.func = math.compile(func)
-    }
-    else 
-      this.func = func
+    if (typeof func == 'string') this.func = math.compile(func)
+    else this.func = func
 
-    this.canvas.addEventListener('mousemove', event => {
-      const { offsetX: x, offsetY: y } = event
+    this.contour = contour
 
-      switch (event.buttons) {
-        case 0:
-          // no button
-          break
-        case 1:
-          // left button
-          if (this.listen) break
-          this.drawGrid()
-          this.drawVector(x, y)
-          this.updateZ(this.getNumber({x, y}))
-          zSpan.textContent = `${this.z.a} + ${this.z.b}i`
-          break
-        case 2:
-            // right button
-            break
-        case 4:
-          // middle button
-          this.ox = x - this.mouseOffsetX
-          this.oy = y - this.mouseOffsetY
-          this.drawGrid()
-          this.drawZ()
-          break
-      }
-    })
+    this.canvas.addEventListener('mousemove', e => this.mousemoveHandler(e) )
+    this.canvas.addEventListener('mousedown', e => this.mousedownHandler(e) )
+    this.canvas.addEventListener(    'wheel', e => this.wheelHandler    (e) )
 
-    this.canvas.addEventListener('mousedown', event => {
-      switch (event.button) {
-        case 0:
-          // left button
-          break
-        case 1:
-          // middle button
-          this.mouseOffsetX = event.offsetX - this.ox
-          this.mouseOffsetY = event.offsetY - this.oy
-          break
-        case 2:
-          // right button
-          break
-      }
-    })
+    this.draw()
+  }
 
+  draw() {
     this.drawGrid()
+    if (this.contour) this.contour.draw(this)
+    if (this.z) this.drawZ()
   }
 
   drawGrid() {
@@ -123,54 +86,57 @@ class Plot {
     this.ctx.stroke()
     // Draw origin
     this.ctx.fillStyle = '#0808B0'
-    this.ctx.arc(this.ox, this.oy, 5, 0, 2 * Math.PI)
+    this.ctx.beginPath()
+    this.ctx.arc(this.ox, this.oy, 4, 0, 2 * Math.PI)
     this.ctx.fill()
   }
 
-  drawVector(x, y) {
+  drawVector({x, y}) {
     this.ctx.strokeStyle = '#ff0000'
     this.ctx.lineCap = 'round'
-    this.ctx.lineWidth = 4
+    this.ctx.lineWidth = 2
     this.ctx.beginPath()
     this.ctx.moveTo(this.ox, this.oy)
     this.ctx.lineTo(x, y)
     this.ctx.stroke()
+
+    this.ctx.fillStyle = '#ff0000'
+    this.ctx.beginPath()
+    this.ctx.arc(x, y, 4, 0, 2 * Math.PI)
+    this.ctx.fill()
   }
 
-  locateNumber({a, b}) {
-    return { x: this.ox + a * this.sx, y: this.oy - b * this.sy }
+  locateNumber({re, im}) {
+    return { x: this.ox + re * this.sx, y: this.oy - im * this.sy }
   }
 
   getNumber({x, y}) {
-    return { a: (x - this.ox) / this.sx, b: (this.oy - y) / this.sy }
+    return math.complex((x - this.ox) / this.sx, (this.oy - y) / this.sy)
   }
 
   updateZ(z) {
     this.z = z
-    if (!this.listen) zSpan.textContent = `${z.a} + ${z.b}i`
     for (const listener of this.listeners)
-      listener.passZ(z)
+      listener.passZ(z, this)
 
-    this.drawGrid()
-    this.drawZ()
+    this.draw()
   }
 
-  passZ(z) {
-    if (!this.func) {
+  passZ(z, talker) {
+    if (talker != this.listen) return
+
+    if (!this.func)
       this.updateZ(z)
-      return
+    else {
+      const w = this.func.evaluate({z: z})
+      this.updateZ(w)
     }
-    
-    const complexZ = math.complex(z.a, z.b)
-    const complexW = this.func.evaluate({ z: complexZ })
-    const w = { a: complexW.re, b: complexW.im }
-    this.updateZ(w)
   }
 
   drawZ() {
     if (!this.z) return
-    const {x, y} = this.locateNumber(this.z)
-    this.drawVector(x, y)
+    const pos = this.locateNumber(this.z)
+    this.drawVector(pos)
   }
 
   resetView() {
@@ -179,13 +145,73 @@ class Plot {
     this.sx = this.width  / 5
     this.sy = this.sx
 
-    this.drawGrid()
-    this.drawZ()
+    this.draw()
+  }
+
+  mousemoveHandler(event) {
+    const { offsetX: x, offsetY: y } = event
+
+    switch (event.buttons) {
+      case 0:
+        // no button
+        break
+      case 1:
+        // left button
+        if (this.listen) break
+        this.updateZ(this.getNumber({x, y}))
+        this.draw()
+        break
+      case 2:
+          // right button
+          break
+      case 4:
+        // middle button
+        this.ox = x - this.mouseOffsetX
+        this.oy = y - this.mouseOffsetY
+        this.draw()
+        break
+    }
+  }
+
+  mousedownHandler(event) {
+    switch (event.button) {
+      case 0:
+        // left button
+        break
+      case 1:
+        // middle button
+        this.mouseOffsetX = event.offsetX - this.ox
+        this.mouseOffsetY = event.offsetY - this.oy
+        break
+      case 2:
+        // right button
+        break
+    }
+  }
+
+  wheelHandler(event) {
+    const { offsetX: x, offsetY: y, deltaY: dy } = event
+    let mouseZ = this.getNumber({x, y})
+
+    // Update scale
+    this.sx += dy * -0.15
+    this.sy += dy * -0.15
+
+    // Restrict scale
+    this.sx = Math.max(10, Math.min(this.sx, 300))
+    this.sy = Math.max(10, Math.min(this.sy, 300))
+
+    // Relocate origin so that point under mouse stays constant
+    let { x: newX, y: newY } = this.locateNumber(mouseZ)
+    this.ox += x - newX
+    this.oy += y - newY
+    this.draw()
+  }
+
+  updateListen(newListen) {
+    if (this.listen && this.listen != newListen) // Remove from previous listen's listeners list
+      this.listen.listeners.filter( obj => obj != this )
+    this.listen = newListen
   }
 
 }
-
-const domainCanv = document.getElementById('domain')
-const domainPlot = new Plot(domainCanv)
-const imageCanv = document.getElementById('image')
-const imagePlot = new Plot(imageCanv, domainPlot, '1/z')

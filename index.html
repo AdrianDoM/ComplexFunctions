@@ -34,9 +34,9 @@
     <canvas class="plot" id="domain" width=400px height=400px></canvas>
     <canvas class="plot" id="image"  width=400px height=400px></canvas>
 
-    <p><button id="domainReset">Reset view</button> z = <span id="z">-</span></p>
-    <p><button id="imageReset">Reset view</button> f(z) = <span id="w">-</span></p>
-    <p>∫f(z)dz = <span id="swdz">-</span></p>
+    <p><button id="domainReset">Reset view</button> z = <span id="z">undefined</span></p>
+    <p><button id="imageReset">Reset view</button> f(z) = <span id="w">undefined</span></p>
+    <p>∫f(z)dz = <span id="swdz">undefined</span></p>
     
     <p><button id="animate">Animate contour</button></p>
 
@@ -52,11 +52,12 @@
       animateButton = document.getElementById('animate')
 
       const
-      t    = new Interval('t', 0, 2*Math.PI, 200, 20),
-      c    = new Contour('c', 'e^(i*t)', t),
+      t    = new Interval('t', 0, 2*Math.PI, 200, 20, true),
+      c    = new Contour('c', '1/2+e^(i*t)', t),
       z    = new Variable('z', undefined, [c], 'red'),
-      w    = new Variable('w', '1/z', [z], 'darkOrange'),
-      dz   = new DeltaVar('dz', z),
+      w    = new Variable('w', '1+z^2', [z], 'darkOrange'),
+      z2   = new Variable('z2', `1/2+e^(i*(t+${t.stepSize/2}))`, [t]),
+      dz   = new DeltaVar('dz', z2),
       wdz  = new Variable('wdz', 'w * dz', [w, dz], 'green'),
       swdz = new CumVar('swdz', wdz),
       domainPlot = new Plot(domainCanv, [c, z]),

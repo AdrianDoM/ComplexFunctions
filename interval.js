@@ -2,7 +2,7 @@
 
 class Interval {
 
-  constructor(name, from=0, to=1, steps=100, timeInterval=20) {
+  constructor(name, from=0, to=1, steps=100, timeInterval=20, midpoint=false) {
     this.name  = name
     this.from  = from
     this.to    = to
@@ -13,6 +13,8 @@ class Interval {
     this.timeInterval = timeInterval
 
     this.isAnimating = false
+
+    this.midpoint = midpoint
 
     this.listeners = []
   }
@@ -28,20 +30,40 @@ class Interval {
     if (this.isAnimating)
       window.clearInterval(this.animationID)
 
-    this.isAnimating = true
-    this.set(this.from)
+    this.startAnimation()
 
+    this.tick = 0
+    this.set(this.midpoint ? this.from - this.stepSize / 2 : this.from)
+
+    let newValue
     this.animationID = window.setInterval( () => {
-      this.set(this.value += this.stepSize)
+      ++this.tick
+      newValue = this.value += this.stepSize
 
-      if (this.value >= this.to) { // End animation
+      if (newValue >= this.to) { // End animation
+        if (!this.midpoint) this.set(this.to)
+
         window.clearInterval(this.animationID)
-        this.isAnimating = false
+        this.endAnimation()
         this.set()
 
         if (loop) this.animate(true)
-      }
+      } else
+        this.set(newValue)
     }, this.timeInterval)
+  }
+
+  startAnimation() {
+    this.isAnimating = true
+    for (const listener of this.listeners)
+      listener.startAnimation()
+  }
+
+  endAnimation() {
+    this.isAnimating = false
+    this.tick = undefined
+    for (const listener of this.listeners)
+      listener.endAnimation()
   }
 
   addListener(listener) {

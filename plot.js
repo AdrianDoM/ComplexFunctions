@@ -18,6 +18,8 @@ class Plot {
     for (const talker of this.talkers)
       talker.addListener(this)
 
+    this.isAnimating = false
+
     this.canvas.addEventListener('mousemove', e => this.mousemoveHandler(e) )
     this.canvas.addEventListener('mousedown', e => this.mousedownHandler(e) )
     this.canvas.addEventListener(    'wheel', e => this.wheelHandler    (e) )
@@ -185,11 +187,32 @@ class Plot {
   varUpdate(talker) {
     if (!this.talkers.includes(talker))
       throw new Error('Received update from unregistered talker.')
+
+    if (this.isAnimating) {
+      const animatedTalkers = this.talkers.filter( t => t.isAnimating )
+      const talkerTicks = animatedTalkers.map( t => t.tick )
+
+      if (talkerTicks.some( tick => tick != talkerTicks[0] ) ||
+          this.tick == talkerTicks[0])
+        // If all talkers are not at the same tick
+        // Or we are already at the given tick
+        // Don't update
+        return
+      else
+        // If they are all the same, update state and tick
+        this.tick = talkerTicks[0]
+    }
+    
     this.draw()
   }
 
-  contourUpdate(talker) {
+  startAnimation() {
+    this.isAnimating = true
+  }
 
+  endAnimation() {
+    this.isAnimating = false
+    this.tick = undefined
   }
 
 }

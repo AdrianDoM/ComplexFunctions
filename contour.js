@@ -15,8 +15,8 @@ class Contour {
     this.derivative = this.derivative.compile()
     
     this.color = color
-    
-    // this.dVar = new Variable('d' + this.name, 'purple', this.derivative, [this.param])
+
+    this.isAnimating = false
     
     this.listeners = []
   }
@@ -39,17 +39,6 @@ class Contour {
     }
 
     plot.ctx.stroke()
-
-    // if (this.param.isAnimating) { // Plot derivative
-    //   const {x: dx, y: dy} = plot.locateNumber(math.add(z, this.dVar.value))
-
-    //   plot.ctx.lineWidth = 2
-    //   plot.ctx.strokeStyle = this.dVar.color
-    //   plot.ctx.beginPath()
-    //   plot.ctx.moveTo(x, y)
-    //   plot.ctx.lineTo(dx, dy)
-    //   plot.ctx.stroke()
-    // }
   }
 
   eval(value=this.param.value) {
@@ -63,10 +52,35 @@ class Contour {
   varUpdate(talker) {
     if (talker != this.param)
       throw new Error('Received update from unregistered talker.')
+
+    if (this.isAnimating) {
+      if (this.tick != talker.tick)
+        this.tick = talker.tick
+      else
+        return
+    }
+
     if (this.func == undefined || talker.value == undefined)
       this.set(talker.value)
     else
       this.set(this.eval())
+  }
+
+  startAnimation() {
+    if (!this.isAnimating) {
+      this.isAnimating = true
+      for (const listener of this.listeners)
+        listener.startAnimation()
+    }
+  }
+
+  endAnimation() {
+    if (this.isAnimating) {
+      this.isAnimating = false
+      this.tick = undefined
+      for (const listener of this.listeners)
+        listener.endAnimation()
+    }
   }
 
   set(value) {

@@ -22,4 +22,7 @@ class Display {
       throw new Error('Received update from unregistered talker.')
   }
 
+  startAnimation() {}
+  endAnimation() {}
+
 }

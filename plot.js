@@ -157,8 +157,8 @@ class Plot {
     this.sy += dy * -0.15
 
     // Restrict scale
-    this.sx = Math.max(10, Math.min(this.sx, 300))
-    this.sy = Math.max(10, Math.min(this.sy, 300))
+    this.sx = Math.max(10, Math.min(this.sx, 500))
+    this.sy = Math.max(10, Math.min(this.sy, 500))
 
     // Relocate origin so that point under mouse stays constant
     let { x: newX, y: newY } = this.locateNumber(mouseZ)

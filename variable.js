@@ -2,9 +2,8 @@
 
 class Variable {
 
-  constructor(name, color='red', func, params=[]) {
+  constructor(name, func, params=[], color="red") {
     this.name  = name
-    this.color = color
 
     if (typeof func == 'string')
       this.func = math.compile(func)
@@ -19,6 +18,8 @@ class Variable {
     this.talkers = params
     for (const talker of this.talkers)
       talker.addListener(this)
+
+    this.color = color
   }
 
   draw(plot) {

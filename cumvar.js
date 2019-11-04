@@ -1,8 +1,8 @@
 "use strict"
 
-class DeltaVar {
+class CumVar {
 
-  constructor(name, talker, color='purple') {
+  constructor(name, talker, color='blue') {
     this.name = name
 
     this.talker = talker
@@ -21,11 +21,14 @@ class DeltaVar {
   }
 
   update(value) {
-    if (this.prevValue != undefined && value != undefined)
-      this.set(math.subtract(value, this.prevValue))
+    if (value != undefined) {
+      if (this.value != undefined)
+        this.set(math.add(this.value, value))
+      else
+        this.set(value)
+    }
     else
       this.set()
-    this.prevValue = value
   }
 
   draw(plot) {

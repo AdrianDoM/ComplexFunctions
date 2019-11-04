@@ -7,6 +7,7 @@
     <script type="text/javascript" src="interval.js"></script>
     <script type="text/javascript" src="contour.js"></script>
     <script type="text/javascript" src="deltavar.js"></script>
+    <script type="text/javascript" src="cumvar.js"></script>
     <script type="text/javascript" src="plot.js"></script>
     <script type="text/javascript" src="display.js"></script>
 
@@ -35,6 +36,7 @@
 
     <p><button id="domainReset">Reset view</button> z = <span id="z">-</span></p>
     <p><button id="imageReset">Reset view</button> f(z) = <span id="w">-</span></p>
+    <p>∫f(z)dz = <span id="swdz">-</span></p>
     
     <p><button id="animate">Animate contour</button></p>
 
@@ -44,21 +46,24 @@
       imageCanv  = document.getElementById('image'),
       zSpan      = document.getElementById('z'),
       wSpan      = document.getElementById('w'),
+      swdzSpan   = document.getElementById('swdz')
       dResetButton  = document.getElementById('domainReset'),
       iResetButton  = document.getElementById('imageReset'),
       animateButton = document.getElementById('animate')
 
       const
-      t          = new Interval('t', 0, 2*Math.PI, 100, 20),
-      c          = new Contour('c', '1/2+e^(i*t)', t),
-      wc         = new Contour('wc', '1/(1/2+e^(i*t))', t,'lightgreen'),
-      z          = new Variable('z', undefined, [c], 'red'),
-      w          = new Variable('w', '1/z', [z], 'darkOrange'),
-      dz         = new DeltaVar('dz', z),
+      t    = new Interval('t', 0, 2*Math.PI, 200, 20),
+      c    = new Contour('c', 'e^(i*t)', t),
+      z    = new Variable('z', undefined, [c], 'red'),
+      w    = new Variable('w', '1/z', [z], 'darkOrange'),
+      dz   = new DeltaVar('dz', z),
+      wdz  = new Variable('wdz', 'w * dz', [w, dz], 'green'),
+      swdz = new CumVar('swdz', wdz),
       domainPlot = new Plot(domainCanv, [c, z]),
-      imagePlot  = new Plot(imageCanv, [wc, w, dz]),
-      displayZ   = new Display(zSpan, z),
-      displayW   = new Display(wSpan, w)
+      imagePlot  = new Plot(imageCanv, [w, dz, wdz, swdz]),
+      displayZ    = new Display(zSpan, z),
+      displayW    = new Display(wSpan, w),
+      displaySwdz = new Display(swdzSpan, swdz)
 
       dResetButton.onclick  = () => domainPlot.resetView()
       iResetButton.onclick  = () => imagePlot.resetView()

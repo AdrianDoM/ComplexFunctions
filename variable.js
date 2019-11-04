@@ -2,7 +2,7 @@
 
 class Variable {
 
-  constructor(name, func, params=[], color="red") {
+  constructor(name, func, params=[], color="red", capture=true) {
     this.name  = name
 
     if (typeof func == 'string')
@@ -19,7 +19,8 @@ class Variable {
     for (const talker of this.talkers)
       talker.addListener(this)
 
-    this.color = color
+    this.color   = color
+    this.capture = capture
   }
 
   draw(plot) {
@@ -49,9 +50,11 @@ class Variable {
   }
 
   set(value) {
-    this.value = value
-    for (const elem of this.listeners)
-      elem.varUpdate(this)
+    if (value != undefined || !this.capture) {
+      this.value = value
+      for (const elem of this.listeners)
+        elem.varUpdate(this)
+    }
   }
 
   varUpdate(talker) {

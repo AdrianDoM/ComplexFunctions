@@ -59,14 +59,18 @@
       z    = new Variable('z', c.func, [t.midpoint], 'red'),
       w    = new Variable('w', '1/z', [z], 'darkOrange'),
       dz   = new DeltaVar('dz', c),
-      wdz  = new Variable('wdz', 'w * dz', [w, dz], 'green'),
+      wdz  = new Variable('wdz', 'w * dz', [w, dz], 'deeppink'),
       swdz = new CumVar('swdz', wdz),
-      m    = new Variable('m')
+      m    = new Variable('m'),
+      n    = new Variable('n', '1/m', [m], 'darkOrange'),
+      dm   = new DeltaVar('dm', m),
+      ndm  = new Variable('ndm', 'n * dm', [n, dm], 'deeppink'),
+      sndm = new CumVar('sndm', ndm)
 
       const
-      domainPlot = new Plot(domainCanv, [c, z]),
-      imagePlot  = new Plot(imageCanv, [w, swdz]),
-      diffsPlot  = new Plot(diffsCanv, [dz, wdz], m),
+      domainPlot = new Plot(domainCanv, [c, z], m),
+      imagePlot  = new Plot(imageCanv, [w, swdz, n, sndm]),
+      diffsPlot  = new Plot(diffsCanv, [dz, wdz, dm, ndm]),
       displayZ    = new Display(zSpan, z),
       displayW    = new Display(wSpan, w),
       displaySwdz = new Display(swdzSpan, swdz)

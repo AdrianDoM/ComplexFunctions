@@ -121,7 +121,6 @@ class Plot {
         if (this.mouseVar) {
           const newValue = this.getNumber({x: event.offsetX, y: event.offsetY})
           this.mouseVar.set(newValue)
-          this.draw()
         }
         break
       case 2:
@@ -132,6 +131,7 @@ class Plot {
         if (this.mouseOffsetX != undefined) {
           this.ox = event.offsetX - this.mouseOffsetX
           this.oy = event.offsetY - this.mouseOffsetY
+          this.draw()
         }
         break
     }

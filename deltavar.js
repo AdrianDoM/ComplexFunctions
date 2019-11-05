@@ -2,7 +2,7 @@
 
 class DeltaVar {
 
-  constructor(name, talker, func, color='purple', capture=true) {
+  constructor(name, talker, func, color='purple', timeStep, capture=true) {
     this.name = name
 
     this.talker = talker
@@ -13,8 +13,9 @@ class DeltaVar {
     else if (typeof func == 'object')
       this.func = func
 
-    this.color = color
-    this.capture = capture
+    this.color    = color
+    this.timeStep = timeStep
+    this.capture  = capture
 
     this.isAnimating = false
 
@@ -36,6 +37,18 @@ class DeltaVar {
   }
 
   update(value) {
+    if (this.timeStep != undefined) {
+      const time = Date.now()
+      if (this.stamp != undefined && time - this.stamp < this.timeStep) {
+        console.log('Rejected update, too soon')
+        return
+      }
+      else {
+        console.log('Accepted update. New stamp: ' + time)
+        this.stamp = time
+      }
+    }
+
     if (this.func != undefined && value != undefined) {
       const ctx = { [this.talker.name]: value }
       value = this.func.evaluate(ctx)

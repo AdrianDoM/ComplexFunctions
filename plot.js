@@ -2,7 +2,7 @@
 
 class Plot {
 
-  constructor(canvas, talkers=[], originX, originY, scaleX, scaleY) {
+  constructor(canvas, talkers=[], mouseVar, originX, originY, scaleX, scaleY) {
     this.canvas = canvas
     this.ctx    = canvas.getContext('2d', { alpha: false })
     this.width  = canvas.width
@@ -13,6 +13,11 @@ class Plot {
 
     this.sx     = scaleX  == undefined ? this.width  / 5 : scaleX
     this.sy     = scaleY  == undefined ? this.sx         : scaleY
+
+    this.value    = null
+    this.mouseVar = mouseVar
+    if (this.mouseVar)
+      talkers.push(this.mouseVar)
 
     this.talkers = talkers
     for (const talker of this.talkers)
@@ -113,6 +118,11 @@ class Plot {
         break
       case 1:
         // left button
+        if (this.mouseVar) {
+          const newValue = this.getNumber({x: event.offsetX, y: event.offsetY})
+          this.mouseVar.set(newValue)
+          this.draw()
+        }
         break
       case 2:
         // right button
@@ -122,7 +132,6 @@ class Plot {
         if (this.mouseOffsetX != undefined) {
           this.ox = event.offsetX - this.mouseOffsetX
           this.oy = event.offsetY - this.mouseOffsetY
-          this.draw()
         }
         break
     }
@@ -132,6 +141,10 @@ class Plot {
     switch (event.button) {
       case 0:
         // left button
+        if (this.mouseVar) {
+          const newValue = this.getNumber({x: event.offsetX, y: event.offsetY})
+          this.mouseVar.set(newValue)
+        }
         break
       case 1:
         // middle button

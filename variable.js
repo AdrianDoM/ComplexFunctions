@@ -47,8 +47,26 @@ class Variable {
   getContext() {
     const ctx = {}
     for (const param of this.talkers)
-      ctx[param.name] = param.value
+      if (param.value != undefined) 
+        ctx[param.name] = param.value
     return ctx
+  }
+
+  eval() {
+    if (this.func == undefined)
+      return this.talkers[0].value
+    
+    const ctx = {}
+    for (const param of this.talkers)
+      if (param.value !== null) {
+
+        if (param.value != undefined)
+          ctx[param.name] = param.value
+        else
+          return undefined
+    }
+
+    return this.func.evaluate(ctx)
   }
 
   set(value) {
@@ -60,7 +78,7 @@ class Variable {
   }
 
   varUpdate(talker) {
-    if (!this.talkers.includes(talker))
+    if (!this.talkers.includes(talker) || talker instanceof Plot)
       throw new Error('Received update from unregistered talker.')
 
     if (this.isAnimating) {
@@ -79,12 +97,7 @@ class Variable {
         this.tick = talkerTicks[0]
     }
 
-    if (this.func == undefined)
-      this.set(talker.value)
-    else if (this.talkers.find( t => t.value == undefined ))
-      this.set()
-    else
-      this.set(this.func.evaluate(this.getContext()))
+    this.set(this.eval())
   }
 
   startAnimation() {

@@ -61,9 +61,12 @@
       dz   = new DeltaVar('dz', c),
       wdz  = new Variable('wdz', 'w * dz', [w, dz], 'green'),
       swdz = new CumVar('swdz', wdz),
+      m    = new Variable('m')
+
+      const
       domainPlot = new Plot(domainCanv, [c, z]),
       imagePlot  = new Plot(imageCanv, [w, swdz]),
-      diffsPlot  = new Plot(diffsCanv, [dz, wdz]),
+      diffsPlot  = new Plot(diffsCanv, [dz, wdz], m),
       displayZ    = new Display(zSpan, z),
       displayW    = new Display(wSpan, w),
       displaySwdz = new Display(swdzSpan, swdz)

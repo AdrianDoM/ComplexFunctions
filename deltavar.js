@@ -2,11 +2,16 @@
 
 class DeltaVar {
 
-  constructor(name, talker, color='purple', capture=true) {
+  constructor(name, talker, func, color='purple', capture=true) {
     this.name = name
 
     this.talker = talker
     this.talker.addListener(this)
+
+    if (typeof func == 'string')
+      this.func = math.compile(func)
+    else if (typeof func == 'object')
+      this.func = func
 
     this.color = color
     this.capture = capture
@@ -31,6 +36,11 @@ class DeltaVar {
   }
 
   update(value) {
+    if (this.func != undefined && value != undefined) {
+      const ctx = { [this.talker.name]: value }
+      value = this.func.evaluate(ctx)
+    }
+
     if (this.prevValue != undefined && value != undefined)
       this.set(math.subtract(value, this.prevValue))
     else
@@ -58,14 +68,11 @@ class DeltaVar {
   }
 
   set(value) {
-    const prevValue = this.value
-
-    this.value = value
-    for (const elem of this.listeners)
-      elem.varUpdate(this)
-
-    if (this.capture && this.value == undefined)
-      this.value = prevValue
+    if (value != undefined || !this.capture) {
+      this.value = value
+      for (const elem of this.listeners)
+        elem.varUpdate(this)
+    }
   }
 
   startAnimation() {

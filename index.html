@@ -31,8 +31,9 @@
   <body>
     <h1>Complex Functions</h1>
 
-    <canvas class="plot" id="domain" width=400px height=400px></canvas>
-    <canvas class="plot" id="image"  width=400px height=400px></canvas>
+    <canvas class="plot" id="domain" width="400px" height="400px"></canvas>
+    <canvas class="plot" id="image"  width="400px" height="400px"></canvas>
+    <canvas class="plot" id="diffs" width="400px" height="400px"></canvas>
 
     <p><button id="domainReset">Reset view</button> z = <span id="z">undefined</span></p>
     <p><button id="imageReset">Reset view</button> f(z) = <span id="w">undefined</span></p>
@@ -44,6 +45,7 @@
       const
       domainCanv = document.getElementById('domain'),
       imageCanv  = document.getElementById('image'),
+      diffsCanv  = document.getElementById('diffs')
       zSpan      = document.getElementById('z'),
       wSpan      = document.getElementById('w'),
       swdzSpan   = document.getElementById('swdz')
@@ -53,15 +55,15 @@
 
       const
       t    = new Interval('t', 0, 2*Math.PI, 200, 20, true),
-      c    = new Contour('c', '1/2+e^(i*t)', t),
-      z    = new Variable('z', undefined, [c], 'red'),
-      w    = new Variable('w', '1+z^2', [z], 'darkOrange'),
-      z2   = new Variable('z2', `1/2+e^(i*(t+${t.stepSize/2}))`, [t]),
-      dz   = new DeltaVar('dz', z2),
+      c    = new Contour('c', 'e^(i*t)', t),
+      z    = new Variable('z', c.func, [t.midpoint], 'red'),
+      w    = new Variable('w', '1/z', [z], 'darkOrange'),
+      dz   = new DeltaVar('dz', c),
       wdz  = new Variable('wdz', 'w * dz', [w, dz], 'green'),
       swdz = new CumVar('swdz', wdz),
       domainPlot = new Plot(domainCanv, [c, z]),
-      imagePlot  = new Plot(imageCanv, [w, dz, wdz, swdz]),
+      imagePlot  = new Plot(imageCanv, [w, swdz]),
+      diffsPlot  = new Plot(diffsCanv, [dz, wdz]),
       displayZ    = new Display(zSpan, z),
       displayW    = new Display(wSpan, w),
       displaySwdz = new Display(swdzSpan, swdz)

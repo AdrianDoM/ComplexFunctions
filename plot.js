@@ -22,6 +22,7 @@ class Plot {
 
     this.canvas.addEventListener('mousemove', e => this.mousemoveHandler(e) )
     this.canvas.addEventListener('mousedown', e => this.mousedownHandler(e) )
+    this.canvas.addEventListener(  'mouseup', e => this.mouseupHandler  (e) )
     this.canvas.addEventListener(    'wheel', e => this.wheelHandler    (e) )
 
     this.draw()
@@ -106,26 +107,23 @@ class Plot {
   }
 
   mousemoveHandler(event) {
-    const { offsetX: x, offsetY: y } = event
-
     switch (event.buttons) {
       case 0:
         // no button
         break
       case 1:
         // left button
-        // if (this.listen) break
-        // this.updateZ(this.getNumber({x, y}))
-        // this.draw()
         break
       case 2:
-          // right button
-          break
+        // right button
+        break
       case 4:
         // middle button
-        this.ox = x - this.mouseOffsetX
-        this.oy = y - this.mouseOffsetY
-        this.draw()
+        if (this.mouseOffsetX != undefined) {
+          this.ox = event.offsetX - this.mouseOffsetX
+          this.oy = event.offsetY - this.mouseOffsetY
+          this.draw()
+        }
         break
     }
   }
@@ -134,10 +132,6 @@ class Plot {
     switch (event.button) {
       case 0:
         // left button
-        // const { offsetX: x, offsetY: y } = event
-        // if (this.listen) break
-        // this.updateZ(this.getNumber({x, y}))
-        // this.draw()
         break
       case 1:
         // middle button
@@ -150,7 +144,25 @@ class Plot {
     }
   }
 
+  mouseupHandler(event) {
+    switch (event.button) {
+      case 0:
+        // left button
+        break
+      case 1:
+        // middle button
+        this.mouseOffsetX = undefined
+        this.mouseOffsetY = undefined
+        break
+      case 2:
+        // right button
+        break
+    }
+  }
+
   wheelHandler(event) {
+    event.preventDefault()
+
     const { offsetX: x, offsetY: y, deltaY: dy } = event
     let mouseZ = this.getNumber({x, y})
 

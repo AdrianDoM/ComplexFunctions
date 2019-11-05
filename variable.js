@@ -52,14 +52,11 @@ class Variable {
   }
 
   set(value) {
-    const prevValue = this.value
-
-    this.value = value
-    for (const elem of this.listeners)
-      elem.varUpdate(this)
-
-    if (this.capture && this.value == undefined)
-      this.value = prevValue
+    if (value != undefined || !this.capture) {
+      this.value = value
+      for (const elem of this.listeners)
+        elem.varUpdate(this)
+    }
   }
 
   varUpdate(talker) {

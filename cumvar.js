@@ -27,7 +27,7 @@ class CumVar {
         return
     }
 
-    this.update(talker.value)  
+    this.update(talker.value)
   }
 
   update(value) {
@@ -61,14 +61,11 @@ class CumVar {
   }
 
   set(value) {
-    const prevValue = this.value
-
-    this.value = value
-    for (const elem of this.listeners)
-      elem.varUpdate(this)
-
-    if (this.capture && this.value == undefined)
-      this.value = prevValue
+    if (value != undefined || !this.capture) {
+      this.value = value
+      for (const elem of this.listeners)
+        elem.varUpdate(this)
+    }
   }
 
   startAnimation() {

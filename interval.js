@@ -14,7 +14,8 @@ class Interval {
 
     this.isAnimating = false
 
-    this.midpoint = midpoint
+    if (midpoint)
+      this.midpoint = new Variable(this.name)
 
     this.listeners = []
   }
@@ -25,6 +26,14 @@ class Interval {
       elem.varUpdate(this)
   }
 
+  setMidpoint(value) {
+    if (this.midpoint) {
+      if (this.isAnimating)
+        this.midpoint.tick = this.tick
+      this.midpoint.set(value)
+    }
+  }
+
   animate(loop) {
     // Stop previous animation if there was one
     if (this.isAnimating)
@@ -33,7 +42,7 @@ class Interval {
     this.startAnimation()
 
     this.tick = 0
-    this.set(this.midpoint ? this.from - this.stepSize / 2 : this.from)
+    this.set(this.from)
 
     let newValue
     this.animationID = window.setInterval( () => {
@@ -41,15 +50,18 @@ class Interval {
       newValue = this.value += this.stepSize
 
       if (newValue >= this.to) { // End animation
-        if (!this.midpoint) this.set(this.to)
+        this.set(this.to)
+        this.setMidpoint(this.to - this.stepSize / 2)
 
         window.clearInterval(this.animationID)
         this.endAnimation()
         this.set()
 
         if (loop) this.animate(true)
-      } else
+      } else {
         this.set(newValue)
+        this.setMidpoint(newValue - this.stepSize / 2)
+      }
     }, this.timeInterval)
   }
 
@@ -57,6 +69,7 @@ class Interval {
     this.isAnimating = true
     for (const listener of this.listeners)
       listener.startAnimation()
+    if (this.midpoint) this.midpoint.startAnimation()
   }
 
   endAnimation() {
@@ -64,6 +77,7 @@ class Interval {
     this.tick = undefined
     for (const listener of this.listeners)
       listener.endAnimation()
+    if (this.midpoint) this.midpoint.endAnimation()
   }
 
   addListener(listener) {

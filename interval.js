@@ -2,7 +2,7 @@
 
 class Interval {
 
-  constructor(name, from=0, to=1, steps=100, timeInterval=20, midpoint=false) {
+  constructor(name, from=0, to=1, {steps=100, timeInterval=20, midpoint=false} = {}) {
     this.name  = name
     this.from  = from
     this.to    = to

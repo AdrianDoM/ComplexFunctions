@@ -54,17 +54,17 @@
       animateButton = document.getElementById('animate')
 
       const
-      t    = new Interval('t', 0, 2*Math.PI, 200, 20, true),
+      t    = new Interval('t', 0, 2*Math.PI, {steps:200, timeInterval:20, midpoint:true}),
       c    = new Contour('c', 'e^(i*t)', t),
-      z    = new Variable('z', c.func, [t.midpoint], 'red'),
-      w    = new Variable('w', '1/z', [z], 'darkOrange'),
+      z    = new Variable('z', c.func, [t.midpoint]),
+      w    = new Variable('w', '1/z', [z], {color:'darkOrange'}),
       dz   = new DeltaVar('dz', c),
-      wdz  = new Variable('wdz', 'w * dz', [w, dz], 'deeppink'),
+      wdz  = new Variable('wdz', 'w * dz', [w, dz], {color:'deeppink'}),
       swdz = new CumVar('swdz', wdz),
       m    = new Variable('m'),
-      n    = new Variable('n', '1/m', [m], 'darkOrange'),
-      dm   = new DeltaVar('dm', m, undefined, undefined, 100),
-      ndm  = new Variable('ndm', 'n * dm', [n, dm], 'deeppink'),
+      n    = new Variable('n', '1/m', [m], {color:'darkOrange'}),
+      dm   = new DeltaVar('dm', m, undefined, {timeStep:50}),
+      ndm  = new Variable('ndm', 'n * dm', [n, dm], {color:'deeppink', wait:true}),
       sndm = new CumVar('sndm', ndm)
 
       const

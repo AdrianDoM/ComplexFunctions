@@ -2,7 +2,7 @@
 
 class CumVar {
 
-  constructor(name, talker, color='deeppink', capture=true) {
+  constructor(name, talker, {color='deeppink', capture=true} = {}) {
     this.name = name
 
     this.talker = talker

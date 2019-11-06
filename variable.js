@@ -2,7 +2,7 @@
 
 class Variable {
 
-  constructor(name, func, params=[], color="red", capture=true) {
+  constructor(name, func, params=[], {color="red", capture=true, wait=false} = {}) {
     this.name  = name
 
     if (typeof func == 'string')
@@ -16,6 +16,10 @@ class Variable {
     this.talkers = params
     for (const talker of this.talkers)
       talker.addListener(this)
+
+    this.wait = wait
+    if (this.wait)
+      this.updatedTalkers = this.talkers.map( t => false )
     
     this.color   = color
     this.capture = capture
@@ -78,7 +82,8 @@ class Variable {
   }
 
   varUpdate(talker) {
-    if (!this.talkers.includes(talker) || talker instanceof Plot)
+    let tIdx = this.talkers.indexOf(talker)
+    if (tIdx < 0 && !(talker instanceof Plot))
       throw new Error('Received update from unregistered talker.')
 
     if (this.isAnimating) {
@@ -97,7 +102,16 @@ class Variable {
         this.tick = talkerTicks[0]
     }
 
+    if (this.wait) {
+      this.updatedTalkers[tIdx] = true
+      if (!this.updatedTalkers.every( b => b ))
+        return
+    }
+
     this.set(this.eval())
+    
+    if (this.wait)
+      this.updatedTalkers = this.talkers.map( t => false )
   }
 
   startAnimation() {

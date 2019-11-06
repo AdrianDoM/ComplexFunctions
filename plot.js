@@ -200,8 +200,8 @@ class Plot {
       event.preventDefault()
       const touch = event.changedTouches.item(0),
       rect = this.canvas.getBoundingClientRect(),
-      x = touch.pageX - rect.left,
-      y = touch.pageY - rect.top,
+      x = touch.clientX - rect.left,
+      y = touch.clientY - rect.top,
       newValue = this.getNumber({x: x, y: y})
       this.mouseVar.set(newValue)
     }

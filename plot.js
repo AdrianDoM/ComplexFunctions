@@ -28,6 +28,7 @@ class Plot {
     this.canvas.addEventListener('mousemove', e => this.mousemoveHandler(e) )
     this.canvas.addEventListener('mousedown', e => this.mousedownHandler(e) )
     this.canvas.addEventListener(  'mouseup', e => this.mouseupHandler  (e) )
+    this.canvas.addEventListener('touchmove', e => this.touchmoveHandler(e) )
     this.canvas.addEventListener(    'wheel', e => this.wheelHandler    (e) )
 
     this.draw()
@@ -192,6 +193,18 @@ class Plot {
     this.ox += x - newX
     this.oy += y - newY
     this.draw()
+  }
+
+  touchmoveHandler(event) {
+    if (this.mouseVar) {
+      event.preventDefault()
+      const touch = event.changedTouches.item(0),
+      rect = this.canvas.getBoundingClientRect(),
+      x = touch.pageX - rect.left,
+      y = touch.pageY - rect.top,
+      newValue = this.getNumber({x: x, y: y})
+      this.mouseVar.set(newValue)
+    }
   }
 
   addTalker(talker) {

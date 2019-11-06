@@ -25,11 +25,13 @@ class Plot {
 
     this.isAnimating = false
 
-    this.canvas.addEventListener('mousemove', e => this.mousemoveHandler(e) )
-    this.canvas.addEventListener('mousedown', e => this.mousedownHandler(e) )
-    this.canvas.addEventListener(  'mouseup', e => this.mouseupHandler  (e) )
-    this.canvas.addEventListener('touchmove', e => this.touchmoveHandler(e) )
-    this.canvas.addEventListener(    'wheel', e => this.wheelHandler    (e) )
+    this.canvas.addEventListener( 'mousemove', e => this.mousemoveHandler (e) )
+    this.canvas.addEventListener( 'mousedown', e => this.mousedownHandler (e) )
+    this.canvas.addEventListener(   'mouseup', e => this.mouseupHandler   (e) )
+    this.canvas.addEventListener('touchstart', e => this.touchstartHandler(e) )
+    this.canvas.addEventListener( 'touchmove', e => this.touchmoveHandler (e) )
+    this.canvas.addEventListener(  'touchend', e => this.touchendHandler  (e) )
+    this.canvas.addEventListener(     'wheel', e => this.wheelHandler     (e) )
 
     this.draw()
   }
@@ -185,8 +187,7 @@ class Plot {
     this.sy += dy * -0.15
 
     // Restrict scale
-    this.sx = Math.max(10, Math.min(this.sx, 500))
-    this.sy = Math.max(10, Math.min(this.sy, 500))
+    this.validateScale()
 
     // Relocate origin so that point under mouse stays constant
     let { x: newX, y: newY } = this.locateNumber(mouseZ)
@@ -195,9 +196,22 @@ class Plot {
     this.draw()
   }
 
+  touchstartHandler(event) {
+    if (event.touches.length >= 2) {
+      const zs = this.getTouchNumbers(event)
+      if (zs != undefined) {
+        const diff = math.subtract(zs.z2, zs.z1)
+        
+        this.touchDist = math.abs(diff)
+        this.touchMid  = math.chain(diff).divide(2).add(zs.z1).done()
+      }
+    }
+  }
+
   touchmoveHandler(event) {
-    if (this.mouseVar) {
-      event.preventDefault()
+    event.preventDefault()
+
+    if (event.touches.length == 1 && this.mouseVar) {
       const touch = event.changedTouches.item(0),
       rect = this.canvas.getBoundingClientRect(),
       x = touch.clientX - rect.left,
@@ -205,6 +219,71 @@ class Plot {
       newValue = this.getNumber({x: x, y: y})
       this.mouseVar.set(newValue)
     }
+
+    else if (event.touches.length >= 2) {
+      const zs = this.getTouchNumbers(event)
+      if (zs != undefined) {
+        const
+        diff = math.subtract(zs.z2, zs.z1),
+        newDist = math.abs(diff),
+        deltaS = newDist / this.touchDist
+
+        this.sx *= deltaS
+        this.sy *= deltaS
+
+        this.validateScale()
+
+        const
+        newMid = math.chain(diff).divide(2).add(zs.z1).done(),
+        delta0 = math.subtract(newMid, this.touchMid),
+        deltaO = this.locateNumber(delta0)
+        
+        this.ox = deltaO.x
+        this.oy = deltaO.y
+
+        this.draw()
+      }
+    }
+  }
+
+  touchendHandler(event) {
+    // TODO:
+    if (event.touches.length >= 2);
+      // alert(`touchend detected ${event.touches.length} touches`)
+  }
+
+  validateScale() {
+    this.sx = Math.max(10, Math.min(this.sx, 600))
+    this.sy = Math.max(10, Math.min(this.sy, 600))
+  }
+
+  getTouchNumbers(event) {
+    const
+    rect = this.canvas.getBoundingClientRect(),
+    t1 = event.touches.item(0),
+    t2 = event.touches.item(1)
+
+    const 
+    x1 = t1.clientX - rect.left,
+    y1 = t1.clientY - rect.top,
+    x2 = t2.clientX - rect.left,
+    y2 = t2.clientY - rect.top
+
+    const
+    x1In = 0 <= x1 && x1 <= this.width,
+    y1In = 0 <= y1 && y1 <= this.height,
+    x2In = 0 <= x2 && x2 <= this.width,
+    y2In = 0 <= y2 && y2 <= this.height
+
+    if (x1In && y1In && x2In && y2In) {
+      const
+      z1 = this.getNumber({ x: x1, y: y1 }),
+      z2 = this.getNumber({ x: x2, y: y2 })
+      
+      return {z1, z2}
+    }
+
+    return undefined
   }
 
   addTalker(talker) {

@@ -63,7 +63,7 @@
       swdz = new CumVar('swdz', wdz),
       m    = new Variable('m'),
       n    = new Variable('n', '1/m', [m], {color:'darkOrange'}),
-      dm   = new DeltaVar('dm', m, undefined, {timeStep:50}),
+      dm   = new DeltaVar('dm', m, undefined, {timeStep:20}),
       ndm  = new Variable('ndm', 'n * dm', [n, dm], {color:'deeppink', wait:true}),
       sndm = new CumVar('sndm', ndm)
 

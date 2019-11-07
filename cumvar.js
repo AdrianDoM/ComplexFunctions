@@ -22,10 +22,8 @@ class CumVar {
       throw new Error('Received update from unregistered talker.')
 
     if (this.isAnimating) {
-      if (this.tick != talker.tick)
-        this.tick = talker.tick
-      else
-        return
+      if (this.tick == talker.tick) return
+      else this.tick = talker.tick
     }
 
     this.update(talker.value)
@@ -68,7 +66,7 @@ class CumVar {
 
   startAnimation() {
     if (!this.isAnimating) {
-      this.value = undefined
+      this.value = 0
       this.isAnimating = true
       for (const listener of this.listeners)
         listener.startAnimation()

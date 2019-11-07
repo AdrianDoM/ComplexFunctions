@@ -55,27 +55,26 @@
       animateButton = document.getElementById('animate')
 
       const
-      t    = new Interval('t', 0, 2*Math.PI, {steps:200, timeInterval:20, midpoint:true}),
-      c    = new Contour('c', 'e^(i*t)', t),
-      z    = new Variable('z', c.func, [t.midpoint]),
-      w    = new Variable('w', '1/z', [z], {color:'darkOrange'}),
-      dz   = new DeltaVar('dz', c),
-      wdz  = new Variable('wdz', 'w * dz', [w, dz], {color:'deeppink'}),
-      swdz = new CumVar('swdz', wdz),
+      // t    = new Interval('t', 0, 2*Math.PI, {steps:200, timeInterval:20, midpoint:true}),
+      // c    = new Contour('c', 'e^(i*t)', t),
+      // z    = new Variable('z', c.func, [t.midpoint]),
+      // w    = new Variable('w', '1/z', [z], {color:'darkOrange'}),
+      // dz   = new DeltaVar('dz', c),
+      // wdz  = new Variable('wdz', 'w * dz', [w, dz], {color:'deeppink'}),
+      // swdz = new CumVar('swdz', wdz),
       m    = new Variable('m'),
-      n    = new Variable('n', '1/m', [m], {color:'darkOrange'}),
       fc   = new FreehandContour(m),
-      n2   = new Variable('n', n.func, [fc.z]),
-      ndm  = new Variable('ndm', 'n * dm', [n2, fc.dz], {color:'deeppink', wait:true}),
+      n    = new Variable('n', '1/m', [fc.z]),
+      ndm  = new Variable('ndm', 'n * dm', [n, fc.dz], {color:'deeppink', wait:true}),
       sndm = new CumVar('sndm', ndm)
 
       const
-      domainPlot = new Plot(domainCanv, [c, z, fc, fc.z], m),
-      imagePlot  = new Plot(imageCanv, [w, swdz, n, sndm]),
-      diffsPlot  = new Plot(diffsCanv, [dz, wdz, fc.dz, ndm]),
-      displayZ    = new Display(zSpan, z),
-      displayW    = new Display(wSpan, w),
-      displaySwdz = new Display(swdzSpan, swdz)
+      domainPlot = new Plot(domainCanv, [fc], m),
+      imagePlot  = new Plot(imageCanv, [n, sndm]),
+      diffsPlot  = new Plot(diffsCanv, [fc.dz, ndm]),
+      displayZ    = new Display(zSpan, m),
+      displayW    = new Display(wSpan, n),
+      displaySwdz = new Display(swdzSpan, sndm)
 
       dResetButton.onclick  = () => domainPlot.resetView()
       iResetButton.onclick  = () => imagePlot.resetView()

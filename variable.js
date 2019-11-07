@@ -4,6 +4,7 @@ class Variable {
 
   constructor(name, func, params=[], {color="red", capture=true, wait=false} = {}) {
     this.name  = name
+    this.value = undefined
 
     if (typeof func == 'string')
       this.func = math.compile(func)
@@ -23,8 +24,11 @@ class Variable {
     
     this.color   = color
     this.capture = capture
+
+    this.mouseControlled = false
     
     this.isAnimating = false
+    this.tick = undefined
 
     this.listeners = []
   }
@@ -86,28 +90,33 @@ class Variable {
     if (tIdx < 0 && !(talker instanceof Plot))
       throw new Error('Received update from unregistered talker.')
 
+    let shouldUpdate = true
+
     if (this.isAnimating) {
       const animatedTalkers = this.talkers.filter( t => t.isAnimating )
       const talkerTicks = animatedTalkers.map( t => t.tick )
 
       if (talkerTicks.some( tick => tick != talkerTicks[0] ) ||
-          this.tick == talkerTicks[0])
+          this.tick == talkerTicks[0]) {
         // If all talkers are not at the same tick
         // Or we are already at the given tick
         // Don't update
-        return
-      else
+        shouldUpdate = false
+      }
+      else {
         // If they are all the same and we are at a new tick
         // Update value and tick
         this.tick = talkerTicks[0]
+      }
     }
-
+    
     if (this.wait) {
       this.updatedTalkers[tIdx] = true
       if (!this.updatedTalkers.every( b => b ))
-        return
+        shouldUpdate = false
     }
 
+    if (!shouldUpdate) return
     this.set(this.eval())
     
     if (this.wait)

@@ -16,8 +16,10 @@ class Plot {
 
     this.value    = null
     this.mouseVar = mouseVar
-    if (this.mouseVar)
+    if (this.mouseVar) {
+      this.mouseVar.mouseControlled = true
       talkers.push(this.mouseVar)
+    }
 
     this.talkers = talkers
     for (const talker of this.talkers)
@@ -143,7 +145,7 @@ class Plot {
     switch (event.button) {
       case 0:
         // left button
-        if (this.mouseVar) {
+        if (this.mouseVar && this.mouseVar.mouseControlled) {
           const newValue = this.getNumber({x: event.offsetX, y: event.offsetY})
           this.mouseVar.set(newValue)
         }
@@ -210,7 +212,7 @@ class Plot {
   touchmoveHandler(event) {
     event.preventDefault()
 
-    if (event.touches.length == 1 && this.mouseVar) {
+    if (event.touches.length == 1 && this.mouseVar && this.mouseVar.mouseControlled) {
       const touch = event.changedTouches.item(0),
       rect = this.canvas.getBoundingClientRect(),
       x = touch.clientX - rect.left,

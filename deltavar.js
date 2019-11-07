@@ -2,17 +2,12 @@
 
 class DeltaVar {
 
-  constructor(name, talker, func, {color='purple', capture=true} = {}) {
+  constructor(name, talker, {color='purple', capture=true} = {}) {
     this.name = name
 
     this.talker = talker
     if (this.talker)
       this.talker.addListener(this)
-
-    if (typeof func == 'string')
-      this.func = math.compile(func)
-    else if (typeof func == 'object')
-      this.func = func
 
     this.color    = color
     this.capture  = capture
@@ -26,18 +21,15 @@ class DeltaVar {
     if (talker != this.talker)
       throw new Error('Received update from unregistered talker.')
 
-    if (this.isAnimating)
-      this.tick = talker.tick
+    if (this.isAnimating) {
+      if (this.tick == talker.tick) return
+      else this.tick = talker.tick
+    }
 
     this.update(talker.value)
   }
 
   update(value) {
-    if (this.func != undefined && value != undefined) {
-      const ctx = { [this.talker.name]: value }
-      value = this.func.evaluate(ctx)
-    }
-
     if (this.prevValue != undefined && value != undefined)
       this.set(math.subtract(value, this.prevValue))
     else
@@ -75,6 +67,7 @@ class DeltaVar {
   startAnimation() {
     if (!this.isAnimating) {
       this.value = undefined
+      this.prevValue = undefined
       this.isAnimating = true
       for (const listener of this.listeners)
         listener.startAnimation()

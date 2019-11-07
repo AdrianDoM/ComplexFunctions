@@ -6,6 +6,7 @@ class Interval {
     this.name  = name
     this.from  = from
     this.to    = to
+    this.value = undefined
 
     this.steps    = steps
     this.stepSize = (to - from) / steps

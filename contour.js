@@ -54,10 +54,8 @@ class Contour {
       throw new Error('Received update from unregistered talker.')
 
     if (this.isAnimating) {
-      if (this.tick != talker.tick)
-        this.tick = talker.tick
-      else
-        return
+      if (this.tick == talker.tick) return
+      else this.tick = talker.tick
     }
 
     if (this.func == undefined || talker.value == undefined)

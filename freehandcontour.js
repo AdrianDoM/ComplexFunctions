@@ -15,6 +15,9 @@ class FreehandContour {
     
     this.path = []
     this.midpoints = []
+  
+    this.storedPath      = undefined
+    this.storedMidpoints = undefined
 
     this.isAnimating = false
     this.tick        = undefined
@@ -28,6 +31,8 @@ class FreehandContour {
   varUpdate(talker) {
     if (talker != this.freehandVar)
       throw new Error('Received update from unregistered talker.')
+
+    if (!talker.mouseControlled) return
 
     const time = Date.now()
     if (this.stamp == undefined) {
@@ -96,42 +101,48 @@ class FreehandContour {
 
   resetPath() {
     this.path = []
+    this.midpoints = []
     for (const elem of this.listeners)
       elem.varUpdate(this)
   }
 
   animate(loop) {
-    // Stop previous animation if there was one
-    if (this.isAnimating)
-      window.clearInterval(this.animationID)
+    if (this.path.length < 2) return
 
-    const path      = this.path
-    const midpoints = this.midpoints
+    // Stop previous animation if there was one
+    if (this.isAnimating) {
+      this.path      = this.storedPath
+      this.midpoints = this.storedMidpoints
+      window.clearInterval(this.animationID)
+    }
+
+    this.storedPath      = this.path
+    this.storedMidpoints = this.midpoints
 
     this.resetPath()
     this.startAnimation()
 
-    this.dz.value = undefined
     this.tick = 0
-    this.addToPath(path[0])
+    this.addToPath(this.storedPath[0])
 
     this.animationID = window.setInterval( () => {
       ++this.tick
 
-      if (this.tick >= path.length) { // End animation
+      if (this.tick >= this.storedPath.length) { // End animation
         window.clearInterval(this.animationID)
         this.endAnimation()
 
         if (loop) this.animate(true)
       } else {
-        this.addToMidpoints(midpoints[this.tick - 1])
-        this.addToPath(path[this.tick])
-        console.log(`Added ${path[0]} to path`)
+        this.freehandVar.set(this.storedMidpoints[this.tick - 1])
+        this.addToPath(this.storedPath[this.tick])
+        this.addToMidpoints(this.storedMidpoints[this.tick - 1])
       }
     }, this.timeStep * 2)
   }
 
   startAnimation() {
+    this.freehandVar.mouseControlled = false
     this.isAnimating = true
     this.z.startAnimation()
     this.dz.startAnimation()
@@ -140,6 +151,7 @@ class FreehandContour {
   }
 
   endAnimation() {
+    this.freehandVar.mouseControlled = true
     this.isAnimating = false
     this.tick = undefined
     this.z.endAnimation()

@@ -8,6 +8,7 @@
     <script type="text/javascript" src="contour.js"></script>
     <script type="text/javascript" src="deltavar.js"></script>
     <script type="text/javascript" src="cumvar.js"></script>
+    <script type="text/javascript" src="freehandcontour.js"></script>
     <script type="text/javascript" src="plot.js"></script>
     <script type="text/javascript" src="display.js"></script>
 
@@ -63,14 +64,15 @@
       swdz = new CumVar('swdz', wdz),
       m    = new Variable('m'),
       n    = new Variable('n', '1/m', [m], {color:'darkOrange'}),
-      dm   = new DeltaVar('dm', m, undefined, {timeStep:20}),
-      ndm  = new Variable('ndm', 'n * dm', [n, dm], {color:'deeppink', wait:true}),
+      fc   = new FreehandContour(m),
+      n2   = new Variable('n', n.func, [fc.z]),
+      ndm  = new Variable('ndm', 'n * dm', [n2, fc.dz], {color:'deeppink', wait:true}),
       sndm = new CumVar('sndm', ndm)
 
       const
       domainPlot = new Plot(domainCanv, [c, z], m),
       imagePlot  = new Plot(imageCanv, [w, swdz, n, sndm]),
-      diffsPlot  = new Plot(diffsCanv, [dz, wdz, dm, ndm]),
+      diffsPlot  = new Plot(diffsCanv, [dz, wdz, fc.dz, ndm]),
       displayZ    = new Display(zSpan, z),
       displayW    = new Display(wSpan, w),
       displaySwdz = new Display(swdzSpan, swdz)

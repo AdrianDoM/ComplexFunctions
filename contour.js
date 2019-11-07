@@ -2,7 +2,7 @@
 
 class Contour {
 
-  constructor(name, func, param, color='green') {
+  constructor(name, func, param, {color='green'} = {}) {
     this.name  = name
     this.func  = math.parse(func)
 

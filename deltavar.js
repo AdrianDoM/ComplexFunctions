@@ -2,11 +2,12 @@
 
 class DeltaVar {
 
-  constructor(name, talker, func, {color='purple', timeStep, capture=true} = {}) {
+  constructor(name, talker, func, {color='purple', capture=true} = {}) {
     this.name = name
 
     this.talker = talker
-    this.talker.addListener(this)
+    if (this.talker)
+      this.talker.addListener(this)
 
     if (typeof func == 'string')
       this.func = math.compile(func)
@@ -14,7 +15,6 @@ class DeltaVar {
       this.func = func
 
     this.color    = color
-    this.timeStep = timeStep
     this.capture  = capture
 
     this.isAnimating = false
@@ -33,18 +33,10 @@ class DeltaVar {
         return
     }
 
-    this.update(talker.value)  
+    this.update(talker.value)
   }
 
   update(value) {
-    if (this.timeStep != undefined) {
-      const time = Date.now()
-      if (this.stamp != undefined && time - this.stamp < this.timeStep)
-        return
-      else
-        this.stamp = time
-    }
-
     if (this.func != undefined && value != undefined) {
       const ctx = { [this.talker.name]: value }
       value = this.func.evaluate(ctx)

@@ -67,7 +67,7 @@ have an optional field `wait`. If it is set to true, the variable will only upda
 ## The article
 ~~I hope that someday~~ Soon I will write a *not-so-short* article about complex functions and how to visualise them
 which demonstrates the potential and usage of this framework. Until that day comes, you can get a sneak peak of
-what it can do by visiting https://adriandom.github.io/ComplexFunctions/test.html.
+what it can do by visiting [this page](https://adriandom.github.io/ComplexFunctions/test.html).
 
 ## Dependencies
 Currently, the only dependency of this project is the [Math.js](https://mathjs.org/index.html) library.

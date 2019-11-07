@@ -4,6 +4,7 @@ class CumVar {
 
   constructor(name, talker, {color='deeppink', capture=true} = {}) {
     this.name = name
+    this.value = 0
 
     this.talker = talker
     this.talker.addListener(this)
@@ -32,10 +33,7 @@ class CumVar {
 
   update(value) {
     if (value != undefined) {
-      if (this.value != undefined)
-        this.set(math.add(this.value, value))
-      else
-        this.set(value)
+      this.set(math.add(this.value, value))
     }
     else
       this.set()

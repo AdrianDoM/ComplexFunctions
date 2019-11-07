@@ -30,7 +30,6 @@ class Plot {
     this.canvas.addEventListener(   'mouseup', e => this.mouseupHandler   (e) )
     this.canvas.addEventListener('touchstart', e => this.touchstartHandler(e) )
     this.canvas.addEventListener( 'touchmove', e => this.touchmoveHandler (e) )
-    this.canvas.addEventListener(  'touchend', e => this.touchendHandler  (e) )
     this.canvas.addEventListener(     'wheel', e => this.wheelHandler     (e) )
 
     this.draw()
@@ -244,12 +243,6 @@ class Plot {
         this.draw()
       }
     }
-  }
-
-  touchendHandler(event) {
-    // TODO:
-    if (event.touches.length >= 2);
-      // alert(`touchend detected ${event.touches.length} touches`)
   }
 
   validateScale() {

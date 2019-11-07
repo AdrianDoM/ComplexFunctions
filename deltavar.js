@@ -26,12 +26,8 @@ class DeltaVar {
     if (talker != this.talker)
       throw new Error('Received update from unregistered talker.')
 
-    if (this.isAnimating) {
-      if (this.tick != talker.tick)
-        this.tick = talker.tick
-      else
-        return
-    }
+    if (this.isAnimating)
+      this.tick = talker.tick
 
     this.update(talker.value)
   }

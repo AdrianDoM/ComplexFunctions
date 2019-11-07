@@ -27,6 +27,10 @@ class Plot {
 
     this.isAnimating = false
 
+    this.mouseOffsetX = undefined
+    this.mouseOffsetY = undefined
+    this.shiftPressed = false
+
     this.canvas.addEventListener( 'mousemove', e => this.mousemoveHandler (e) )
     this.canvas.addEventListener( 'mousedown', e => this.mousedownHandler (e) )
     this.canvas.addEventListener(   'mouseup', e => this.mouseupHandler   (e) )
@@ -116,64 +120,44 @@ class Plot {
   }
 
   mousemoveHandler(event) {
-    switch (event.buttons) {
-      case 0:
-        // no button
-        break
-      case 1:
-        // left button
-        if (this.mouseVar) {
-          const newValue = this.getNumber({x: event.offsetX, y: event.offsetY})
-          this.mouseVar.set(newValue)
-        }
-        break
-      case 2:
-        // right button
-        break
-      case 4:
-        // middle button
-        if (this.mouseOffsetX != undefined) {
-          this.ox = event.offsetX - this.mouseOffsetX
-          this.oy = event.offsetY - this.mouseOffsetY
-          this.draw()
-        }
-        break
+    if (event.buttons == 4 || (event.buttons == 1 && this.shiftPressed) ) {
+      // middle button OR shift + left button
+      if (this.mouseOffsetX != undefined) {
+        this.ox = event.offsetX - this.mouseOffsetX
+        this.oy = event.offsetY - this.mouseOffsetY
+        this.draw()
+      }
+    }
+    else if (event.buttons == 1 && this.mouseVar && this.mouseVar.mouseControlled) {
+      // left button
+      const newValue = this.getNumber({x: event.offsetX, y: event.offsetY})
+      this.mouseVar.set(newValue)
     }
   }
 
   mousedownHandler(event) {
-    switch (event.button) {
-      case 0:
-        // left button
-        if (this.mouseVar && this.mouseVar.mouseControlled) {
-          const newValue = this.getNumber({x: event.offsetX, y: event.offsetY})
-          this.mouseVar.set(newValue)
-        }
-        break
-      case 1:
-        // middle button
-        this.mouseOffsetX = event.offsetX - this.ox
-        this.mouseOffsetY = event.offsetY - this.oy
-        break
-      case 2:
-        // right button
-        break
+    if (event.button == 1 || (event.button == 0 && event.shiftKey) ) {
+      // middle button OR shift + left button
+      this.mouseOffsetX = event.offsetX - this.ox
+      this.mouseOffsetY = event.offsetY - this.oy
+      this.canvas.style.cursor = "move"
+      if (event.shiftKey)
+        this.shiftPressed = true
+    }
+    else if (event.button == 0 && this.mouseVar && this.mouseVar.mouseControlled) {
+      // left button
+      const newValue = this.getNumber({x: event.offsetX, y: event.offsetY})
+      this.mouseVar.set(newValue)
     }
   }
 
   mouseupHandler(event) {
-    switch (event.button) {
-      case 0:
-        // left button
-        break
-      case 1:
-        // middle button
-        this.mouseOffsetX = undefined
-        this.mouseOffsetY = undefined
-        break
-      case 2:
-        // right button
-        break
+    if (event.button == 1 || (event.button == 0 && this.shiftPressed) ) {
+      // middle button OR shift + left button
+      this.mouseOffsetX = undefined
+      this.mouseOffsetY = undefined
+      this.canvas.style.cursor = "auto"
+      this.shiftPressed = false
     }
   }
 

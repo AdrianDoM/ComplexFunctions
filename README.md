@@ -19,7 +19,7 @@ Variables also have names, which allow you to use them in equations.
 Classes that fall under the variable category are:
 * `Variable` - [No surprises](https://youtu.be/u5CVsCnxyXg) here. These are the bread and butter of this framework:
 they can be used for mouse input, as functions of other variables or they can be managed by other wrappers
-(that we'll meet very soon). They can be drawn on `Plot` objects as position vectors.
+(which we'll meet very soon). They can be drawn on `Plot` objects as position vectors.
 * `Interval` - This is a rather special type of variable. It represents an interval in the real line, with 
 a beginning and an end. It is mostly used for animations, since you can make variables take it as a parameter to
 their function. It can optionally manage a midpoint `Variable`, which can be very useful for estimating integrals

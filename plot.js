@@ -30,6 +30,7 @@ class Plot {
     this.mouseOffsetX = undefined
     this.mouseOffsetY = undefined
     this.shiftPressed = false
+    this.leftPressed  = false
 
     this.canvas.addEventListener( 'mousemove', e => this.mousemoveHandler (e) )
     this.canvas.addEventListener( 'mousedown', e => this.mousedownHandler (e) )
@@ -120,6 +121,7 @@ class Plot {
   }
 
   mousemoveHandler(event) {
+    event.preventDefault()
     if (event.buttons == 4 || (event.buttons == 1 && this.shiftPressed) ) {
       // middle button OR shift + left button
       if (this.mouseOffsetX != undefined) {
@@ -128,7 +130,8 @@ class Plot {
         this.draw()
       }
     }
-    else if (event.buttons == 1 && this.mouseVar && this.mouseVar.mouseControlled) {
+    else if (event.buttons == 1 && this.leftPressed &&
+             this.mouseVar && this.mouseVar.mouseControlled) {
       // left button
       const newValue = this.getNumber({x: event.offsetX, y: event.offsetY})
       this.mouseVar.set(newValue)
@@ -136,6 +139,7 @@ class Plot {
   }
 
   mousedownHandler(event) {
+    event.preventDefault()  
     if (event.button == 1 || (event.button == 0 && event.shiftKey) ) {
       // middle button OR shift + left button
       this.mouseOffsetX = event.offsetX - this.ox
@@ -148,16 +152,22 @@ class Plot {
       // left button
       const newValue = this.getNumber({x: event.offsetX, y: event.offsetY})
       this.mouseVar.set(newValue)
+      this.leftPressed = true
     }
   }
 
   mouseupHandler(event) {
+    event.preventDefault()
     if (event.button == 1 || (event.button == 0 && this.shiftPressed) ) {
       // middle button OR shift + left button
       this.mouseOffsetX = undefined
       this.mouseOffsetY = undefined
       this.canvas.style.cursor = "auto"
       this.shiftPressed = false
+    }
+    else if (event.button == 0) {
+      // left button
+      this.leftPressed = false
     }
   }
 

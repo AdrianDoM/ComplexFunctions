@@ -65,11 +65,9 @@ class Contour {
   }
 
   startAnimation() {
-    if (!this.isAnimating) {
-      this.isAnimating = true
-      for (const listener of this.listeners)
-        listener.startAnimation()
-    }
+    this.isAnimating = true
+    for (const listener of this.listeners)
+      listener.startAnimation()
   }
 
   endAnimation() {

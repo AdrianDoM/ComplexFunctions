@@ -65,12 +65,10 @@ class CumVar {
   }
 
   startAnimation() {
-    if (!this.isAnimating) {
-      this.value = 0
-      this.isAnimating = true
-      for (const listener of this.listeners)
-        listener.startAnimation()
-    }
+    this.value = 0
+    this.isAnimating = true
+    for (const listener of this.listeners)
+      listener.startAnimation()
   }
 
   endAnimation() {

@@ -65,13 +65,11 @@ class DeltaVar {
   }
 
   startAnimation() {
-    if (!this.isAnimating) {
-      this.value = undefined
-      this.prevValue = undefined
-      this.isAnimating = true
-      for (const listener of this.listeners)
-        listener.startAnimation()
-    }
+    this.value = undefined
+    this.prevValue = undefined
+    this.isAnimating = true
+    for (const listener of this.listeners)
+      listener.startAnimation()
   }
 
   endAnimation() {

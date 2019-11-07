@@ -69,3 +69,6 @@ from all its parameters.
 ~~I hope that someday~~ Soon I will write a not-so-short article about complex functions and how to visualise them
 which demonstrates the potential and usage of this framework. Till that day comes, you can get a sneak peak of
 what it can do by visiting https://adriandom.github.io/ComplexFunctions/test.html.
+
+## Dependencies
+Currently, the only dependency of this project is the [Math.js](https://mathjs.org/index.html) library.

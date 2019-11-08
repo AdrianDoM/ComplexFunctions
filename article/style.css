@@ -1,0 +1,11 @@
+body {
+  font-size: 16pt;
+  font-family: "Computer Modern Serif", serif;
+  display: grid;
+  grid-template-columns: auto 35em auto;
+}
+
+.text {
+  grid-column: 2;
+  text-align: justify;
+}

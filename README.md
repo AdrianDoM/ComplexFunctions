@@ -96,5 +96,6 @@ the potential and usage of this framework. Until that day comes, you can get a
 sneak peak of what it can do by visiting [this
 page](https://adriandom.github.io/ComplexFunctions/test.html).
 
-## Dependencies Currently, the only dependency of this project is the
+## Dependencies
+Currently, the only dependency of this project is the
 [Math.js](https://mathjs.org/index.html) library.

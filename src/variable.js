@@ -39,7 +39,7 @@ class Variable {
 
     plot.ctx.strokeStyle = this.color
     plot.ctx.lineCap = 'round'
-    plot.ctx.lineWidth = 4
+    plot.ctx.lineWidth = 3
 
     plot.ctx.beginPath()
     plot.ctx.moveTo(plot.ox, plot.oy)
@@ -48,7 +48,7 @@ class Variable {
 
     plot.ctx.fillStyle = this.color
     plot.ctx.beginPath()
-    plot.ctx.arc(x, y, 4, 0, 2 * Math.PI)
+    plot.ctx.arc(x, y, 3, 0, 2 * Math.PI)
     plot.ctx.fill()
   }
 

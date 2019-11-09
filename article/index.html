@@ -9,8 +9,8 @@
   <meta name="author" content="Adrián Doña Mateo">
 
   <!-- Computer Moder font -->
-  <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css">
-  
+  <!-- <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css"> -->
+  <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville|Montserrat&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 
   <!-- Load KaTeX -->
@@ -35,21 +35,87 @@
 </head>
 
 <body>
+  <span>$$
+    \gdef\C{\mathbb{C}}
+    \gdef\re{\text{Re }}
+    \gdef\im{\text{Im }}
+  $$</span>
   <div class="text">
     <h1>Complex functions</h1>
+    <h2>Introduction</h2>
     <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi molestie
-      lectus ut tincidunt lacinia. Sed volutpat quam vitae dui varius pulvinar.
-      Quisque quis dui bibendum, laoreet felis ut, fermentum dui. Fusce ut tellus ut
-      lectus viverra blandit. Sed a dui vitae purus ultrices porttitor eget non
-      lectus. Nullam nec velit ut dui dignissim rhoncus. Aenean ornare vel velit
-      vitae malesuada. Proin eu enim sit amet arcu commodo laoreet. Nunc tortor
-      mauris, placerat eu faucibus sed, pellentesque et nulla. Nullam at dolor
-      sodales, hendrerit orci sit amet, aliquet mi. In cursus porttitor ante ut
-      ullamcorper. Proin porta justo eros, sed consectetur purus ornare eget. In
-      semper libero dictum, posuere magna in, imperdiet turpis.
+      If you are reading this, you will have probably heard of complex numbers. In
+      case you haven't, here's a quick definition:
     </p>
-    <p>$$f(z) \neq \frac{1}{z},\quad z \in \mathbb{C}$$</p>
+    <div class="def">
+      A <em>complex number</em> is a number of the form \(a + ib\), where \(a\) and
+      \(b\) are real numbers and \(i\) is the <em>imaginary unit</em>, for which we
+      have that \(i^2 = -1\). The set of all complex numbers is denoted by \(\C\).
+    </div>
+    <p>
+        Perhaps you are wondering what the meaning of this new number \(i\) is.
+        It is clear that \(i\) doesn't belong in \(\R\), for there is no real number
+        such that its square is \(-1\). Instead of a number, you can think of \(i\) as a mere
+        symbol, a placeholder, for which we have the rule \(i^2 = -1\). Using this
+        new symbol, we can express the roots of other negative real numbers in a new
+        way. For example, \(\sqrt{-9} = 3i\), for we have that \((3i)^2 = 3^2 i^2 =
+        9 \cdot (-1) = -9\).
+      </p>
+    <p>
+      Note that every real number \(r\) is also a complex number, since it can be
+      written as \(r + i0\), so we can think of \(\C\) as an extension of \(\R\).
+      In fact, if we think of \(\R\) as the real line, the addition of this 
+      imaginary unit creates a completely new dimension and so we can picture
+      \(\C\) as the <em>complex plane</em>. Analogous to the \(xy\)-plane, we
+      represent the value of \(a\) on the \(x\)-axis and the value of \(b\) on the
+      \(y\)-axis. For some complex number \(z = a + ib\), these valued are called
+      the real part of \(z\) (written as \(\re z\)) and the imaginary part of \(z\)
+      (written as \(\im z\)), respectively.
+    </p>
+    <p>
+      Here is an interactive representation of the complex plane. You can left-click
+      on it to plot a complex number. Use the mouse wheel to zoom and the middle
+      button to pan (this can also be done using SHIFT + left button).
+    </p>
+    <div class="plot" id="intro-plot">
+      <canvas width="400px" height="400px"></canvas>
+      <p class="math"><span>\(z = 1+i\)</span></p>
+    </div>
+    <script>
+      let plotDiv = document.getElementById('intro-plot'),
+      canvas = plotDiv.querySelector('canvas'),
+      span = plotDiv.querySelector('span'),
+      z = new Variable('z'),
+      plot = new Plot(canvas, undefined, z),
+      display = new Display(span, z)
+      z.set(math.complex(1,1))
+    </script>
+    <p>
+      As you can see, the similarities with the \(xy\)-plane are evident. And it will
+      often be useful to think of complex numbers as vectors in \(\R^2\). For example,
+      addition and subtraction of complex numbers is completely analogous to that of
+      two dimesional real vectors.
+    </p>
+    <div class="def">
+      Let \(z\) and \(w\) be two complex numbers with \(z = a + ib\) and \(w = c + id\),
+      where \(a, b, c, d \in \R\). We define:
+      <ul>
+        <li>
+          \(z + w = (a + ib) + (c + id) = (a+c) + i(b+d)\)
+        </li>
+        <li>
+          \(z - w = (a + ib) - (c + id) = (a-c) + i(b-d)\)
+        </li>
+      </ul>
+    </div>
+    <p>
+      Note how in our definition we had to specify that \(a, b, c, d \in \R\).
+      The reason for this is that the representation \(z = a + ib\) is not unique
+      if we let \(a\) and \(b\) be arbitrary complex numbers. For example,
+      \(1 + 0i\) could also be written as \(0 + i(-i)\). For our purposes,
+      however, we will always assume that, when we write \(z = a + ib\), \(a\)
+      and \(b\) are taken to be real.
+    </p>
   </div>
 </body>
 </html>

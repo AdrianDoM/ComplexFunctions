@@ -1,11 +1,41 @@
 body {
-  font-size: 16pt;
-  font-family: "Computer Modern Serif", serif;
+  font-size: 13pt;
+  font-family: 'Libre Baskerville', serif;
   display: grid;
-  grid-template-columns: auto 35em auto;
+  grid-template-columns: auto 37em auto;
 }
 
 .text {
   grid-column: 2;
   text-align: justify;
+}
+
+.math {
+  font-size: 1.1em;
+}
+
+h1, h2, h3 {
+  font-family: Montserrat, sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+
+p {
+  text-indent: 1.5em;
+}
+
+h2 + p {
+  text-indent: 0;
+}
+
+.def {
+  padding: 0.3em 1em;
+  border: black solid 1px;
+  border-radius: 0.5em;
+}
+
+.plot {
+  text-align: center;
 }

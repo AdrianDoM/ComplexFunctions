@@ -50,11 +50,11 @@ class Plot {
 
   drawGrid() {
     // Draw background
-    this.ctx.fillStyle = '#f0f0f0'
+    this.ctx.fillStyle = '#ffffff'
     this.ctx.fillRect(0, 0, this.width, this.height)
     // Draw grid
     this.ctx.strokeStyle = '#666666'
-    this.ctx.lineWidth = 2
+    this.ctx.lineWidth = 1
     // Vertical lines to right of origin
     for (let x = this.ox + this.sx; x <= this.width; x += this.sx) {
       this.ctx.beginPath()
@@ -84,8 +84,8 @@ class Plot {
       this.ctx.stroke()
     }
     // Axis styling
-    this.ctx.strokeStyle = '#050580'
-    this.ctx.lineWidth = 4
+    this.ctx.strokeStyle = '#101010'
+    this.ctx.lineWidth = 3
     // Draw x axis
     this.ctx.beginPath()
     this.ctx.moveTo(this.ox, 0)
@@ -97,9 +97,9 @@ class Plot {
     this.ctx.lineTo(this.width, this.oy)
     this.ctx.stroke()
     // Draw origin
-    this.ctx.fillStyle = '#0808B0'
+    this.ctx.fillStyle = '#101010'
     this.ctx.beginPath()
-    this.ctx.arc(this.ox, this.oy, 4, 0, 2 * Math.PI)
+    this.ctx.arc(this.ox, this.oy, 3, 0, 2 * Math.PI)
     this.ctx.fill()
   }
 

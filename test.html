@@ -3,14 +3,14 @@
     <title>Complex Functions</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.2.2/math.min.js"></script>
-    <script type="text/javascript" src="variable.js"></script>
-    <script type="text/javascript" src="interval.js"></script>
-    <script type="text/javascript" src="contour.js"></script>
-    <script type="text/javascript" src="deltavar.js"></script>
-    <script type="text/javascript" src="cumvar.js"></script>
-    <script type="text/javascript" src="freehandcontour.js"></script>
-    <script type="text/javascript" src="plot.js"></script>
-    <script type="text/javascript" src="display.js"></script>
+    <script type="text/javascript" src="../src/variable.js"></script>
+    <script type="text/javascript" src="../src/interval.js"></script>
+    <script type="text/javascript" src="../src/contour.js"></script>
+    <script type="text/javascript" src="../src/deltavar.js"></script>
+    <script type="text/javascript" src="../src/cumvar.js"></script>
+    <script type="text/javascript" src="../src/freehandcontour.js"></script>
+    <script type="text/javascript" src="../src/plot.js"></script>
+    <script type="text/javascript" src="../src/display.js"></script>
 
     <style>
       .plot {
@@ -72,9 +72,9 @@
       domainPlot = new Plot(domainCanv, [fc], m),
       imagePlot  = new Plot(imageCanv, [n, sndm]),
       diffsPlot  = new Plot(diffsCanv, [fc.dz, ndm]),
-      displayZ    = new Display(zSpan, m),
-      displayW    = new Display(wSpan, n),
-      displaySwdz = new Display(swdzSpan, sndm)
+      displayZ    = new Display(zSpan, m, false),
+      displayW    = new Display(wSpan, n, false),
+      displaySwdz = new Display(swdzSpan, sndm, false)
 
       dResetButton.onclick  = () => domainPlot.resetView()
       iResetButton.onclick  = () => imagePlot.resetView()

@@ -4,13 +4,11 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Complex functions</title>
+  <title>Complex numbers</title>
   <meta name="description" content="Complex functions">
   <meta name="author" content="Adrián Doña Mateo">
 
-  <!-- Computer Moder font -->
-  <!-- <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css"> -->
-  <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville|Montserrat&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 
   <!-- Load KaTeX -->
@@ -35,17 +33,23 @@
 </head>
 
 <body>
-  <span>$$
+  <span id="macros">$$
     \gdef\C{\mathbb{C}}
     \gdef\re{\text{Re }}
     \gdef\im{\text{Im }}
   $$</span>
+  <h1 class="title">An Introduction to Complex Numbers</h1>
   <div class="text">
-    <h1>Complex functions</h1>
-    <h2>Introduction</h2>
     <p>
-      If you are reading this, you will have probably heard of complex numbers. In
-      case you haven't, here's a quick definition:
+      This is the first on a series of articles about complex variables and functions
+      on them. This first instalment acts as an introduction to complex numbers, assuming
+      no prior knowledge on the subject. Familiarity with real numbers, plots of real
+      functions on the \(xy\)-plane and vectors in \(\R^2\) will prove useful throughout
+      the series.
+    </p>
+    <h2>What are complex numbers?</h2>
+    <p>
+      Without further ado, let us give a formal definition of what a complex number is.
     </p>
     <div class="def">
       A <em>complex number</em> is a number of the form \(a + ib\), where \(a\) and
@@ -84,17 +88,23 @@
     <script>
       let plotDiv = document.getElementById('intro-plot'),
       canvas = plotDiv.querySelector('canvas'),
-      span = plotDiv.querySelector('span'),
+      span = plotDiv.querySelector('span')
+
+      let
       z = new Variable('z'),
       plot = new Plot(canvas, undefined, z),
       display = new Display(span, z)
       z.set(math.complex(1,1))
     </script>
     <p>
-      As you can see, the similarities with the \(xy\)-plane are evident. And it will
-      often be useful to think of complex numbers as vectors in \(\R^2\). For example,
-      addition and subtraction of complex numbers is completely analogous to that of
-      two dimesional real vectors.
+      As you can see, the similarities with the \(xy\)-plane are evident and it will
+      often be useful to think of complex numbers as vectors in \(\R^2\). For this, we
+      simply associate the vector \((a,b)\) and the number \(a+ib\).
+    </p>
+    <h2>Operations with complex numbers</h2>
+    <p>
+      As you might have expected, we can perform arithmetic with complex numbers. For
+      addition and subtraction, this is done in a similar way to vectors in \(\R^2\).
     </p>
     <div class="def">
       Let \(z\) and \(w\) be two complex numbers with \(z = a + ib\) and \(w = c + id\),
@@ -117,5 +127,6 @@
       and \(b\) are taken to be real.
     </p>
   </div>
+  <h3 class="author">Adrián Doña Mateo</h3>
 </body>
 </html>

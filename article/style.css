@@ -1,32 +1,53 @@
-body {
-  font-size: 13pt;
+html {
+  font-size: 29pt;
+  font-weight: 500;
+  font-style: normal;
   font-family: 'Libre Baskerville', serif;
-  display: grid;
-  grid-template-columns: auto 37em auto;
+}
+
+body {
+  margin: 1.5em;
+}
+
+#macros {
+  display: none;
 }
 
 .text {
-  grid-column: 2;
   text-align: justify;
 }
 
-.math {
-  font-size: 1.1em;
-}
-
 h1, h2, h3 {
-  font-family: Montserrat, sans-serif;
+  font-weight: 500;
 }
 
-h1 {
+.title {
+  font-variant-caps: small-caps;
+  border-bottom: black solid 2px;
+  display: inline-block;
   text-align: center;
+  margin: 0;
+  font-size: 60pt;
 }
 
 p {
   text-indent: 1.5em;
+  line-height: 1.5em;
 }
 
-h2 + p {
+h2 {
+  border-bottom: black solid 1px;
+  padding-bottom: 3px;
+}
+
+.author {
+  text-align: right;
+  margin: 0;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+h2 + p, p:first-child {
   text-indent: 0;
 }
 
@@ -38,4 +59,32 @@ h2 + p {
 
 .plot {
   text-align: center;
+}
+
+@media only screen and (min-device-width: 789px) {
+
+html {
+  font-size: 13pt;
+}
+
+body {
+  display: grid;
+  grid-template-columns: 1fr 37em 1fr;
+}
+
+.text {
+  grid-column: 2;
+}
+
+.title {
+  grid-column: 1 / 4;
+  justify-self: center;
+  font-size: 28pt;
+  margin-top: 1em;
+}
+
+.author {
+  grid-column: 2 / 3;
+}
+
 }

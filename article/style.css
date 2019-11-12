@@ -2,7 +2,7 @@ html {
   font-size: 29pt;
   font-weight: 500;
   font-style: normal;
-  font-family: 'Libre Baskerville', serif;
+  font-family: 'Libre Baskerville', Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
 body {
@@ -59,9 +59,21 @@ h2 + p, p:first-child {
 
 .plot {
   text-align: center;
+  position: relative;
 }
 
-@media only screen and (min-device-width: 789px) {
+.plot canvas {
+  border: black solid 1px;
+}
+
+.plot p {
+  position: relative;
+  left: -0.7em;
+}
+
+@media
+only screen and (min-width: 400px) and (resolution: 1dppx),
+(min-width: 981px) and (-webkit-min-device-pixel-ratio: 1.25) {
 
 html {
   font-size: 13pt;
@@ -85,6 +97,13 @@ body {
 
 .author {
   grid-column: 2 / 3;
+}
+
+.multi-plot {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
+  gap: 20px;
 }
 
 }

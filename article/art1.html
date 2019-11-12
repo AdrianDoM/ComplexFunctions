@@ -37,15 +37,16 @@
     \gdef\C{\mathbb{C}}
     \gdef\re{\text{Re }}
     \gdef\im{\text{Im }}
+    \gdef\Arg{\text{Arg }}
   $$</span>
   <h1 class="title">An Introduction to Complex Numbers</h1>
   <div class="text">
     <p>
-      This is the first on a series of articles about complex variables and functions
-      on them. This first instalment acts as an introduction to complex numbers, assuming
+      This article is the first on a series about complex variables and functions
+      on them. In this instalment we provide an introduction to complex numbers, assuming
       no prior knowledge on the subject. Familiarity with real numbers, plots of real
-      functions on the \(xy\)-plane and vectors in \(\R^2\) will prove useful throughout
-      the series.
+      functions on the \(xy\)-plane, vectors in \(\R^2\) and polar coordinates will prove
+      useful throughout the series.
     </p>
     <h2>What are complex numbers?</h2>
     <p>
@@ -85,17 +86,6 @@
       <canvas width="400px" height="400px"></canvas>
       <p class="math"><span>\(z = 1+i\)</span></p>
     </div>
-    <script>
-      let plotDiv = document.getElementById('intro-plot'),
-      canvas = plotDiv.querySelector('canvas'),
-      span = plotDiv.querySelector('span')
-
-      let
-      z = new Variable('z'),
-      plot = new Plot(canvas, undefined, z),
-      display = new Display(span, z)
-      z.set(math.complex(1,1))
-    </script>
     <p>
       As you can see, the similarities with the \(xy\)-plane are evident and it will
       often be useful to think of complex numbers as vectors in \(\R^2\). For this, we
@@ -108,7 +98,7 @@
     </p>
     <div class="def">
       Let \(z\) and \(w\) be two complex numbers with \(z = a + ib\) and \(w = c + id\),
-      where \(a, b, c, d \in \R\). We define:
+      where \(a, b, c, d \in \R\). We can add and subtract them as follows:
       <ul>
         <li>
           \(z + w = (a + ib) + (c + id) = (a+c) + i(b+d)\)
@@ -126,7 +116,132 @@
       however, we will always assume that, when we write \(z = a + ib\), \(a\)
       and \(b\) are taken to be real.
     </p>
+    <p>
+      The case of multiplication is not so simple. We can't borrow multiplication
+      from of vectors, plainly because there is no multiplication between two-dimensional
+      vectors that yields another two-dimensional vector. Instead, we use the rule
+      \(i^2 = -1\) to multiply two complex numbers algebraically.
+    </p>
+    <div class="def">
+      Let \(z = a + ib\) and \(w = c + id\) be two complex numbers. We have:
+      $$zw = (a + ib)(c + id) = ac + ibc + iad + i^2bd$$
+      $$ = (ac - bd) + i(bc + ad)$$
+    </div>
+    <p>
+      At first sight, this definition has no apparent geometric meaning, but we will
+      soon uncover the secrets of complex multiplication. For now, have a go at
+      multiplying two complex numbers on the complex plane.
+    </p>
+    <div class="multi-plot" id="mult-plot">
+      <div class="plot">
+        <canvas width="250px" height="250px"></canvas>
+        <p class="math"><span>\(z=1\)</span></p>
+      </div>
+      <div class="plot">
+          <canvas width="250px" height="250px"></canvas>
+          <p class="math"><span>\(w=i\)</span></p>
+      </div>
+      <div class="plot">
+          <canvas width="250px" height="250px"></canvas>
+          <p class="math"><span>\(zw=i\)</span></p>
+      </div>
+    </div>
+    <p>
+      Do you notice anything interesting? Try setting \(w\) to \(i\) and move \(z\)
+      around. How about now? Perhaps visualising both \(z\) and \(zi\) in the same
+      plot will help you see what's happening:
+    </p>
+    <div class="plot" id="imult-plot">
+      <canvas width="400px" height="400px"></canvas>
+      <p class="math"><span>\(z=1\)</span>&nbsp;&nbsp; and &nbsp;&nbsp;<span>\(zi=i\)</span></p>
+      <p class="math"></p>
+    </div>
+    <p>
+      It is easy to see the pattern now: multiplying by \(i\) rotates \(z\) by a
+      right angle counterclockwise. In fact, complex multiplication has a lot to do
+      with rotation, but in order to explain this relation we will need to introduce
+      the system of <em>polar coordinates</em>. Before we do this, however, we will
+      introduce two more operations on complex numbers.
+    </p>
+    <div class="def">
+      Let \(z = a + ib\). We define the conjugate of \(z\), writen \(\bar{z}\) and
+      read <q>z bar</q>, as \(a - ib\).
+    </div>
+    <p>
+      Geometrically, the conjugate is the reflection of \(z\) about the \(x\)-axis.
+      One of the most important properties of \(\bar{z}\) is that \(z\bar{z} = 
+      (a + ib)(a - ib) = a^2 - b^2 + i(ba - ab) = a^2 + b^2\) is always a real number.
+      We can now use this fact to introduce division of complex numbers.
+    </p>
+    <div class="def">
+      Let \(z\) and \(w\) be as usual. We can divide them as follows:
+      $$\frac{z}{w} = \frac{a + ib}{c + id} = \frac{a + ib}{c + id}\frac{c - id}{c - id}
+      = \frac{ac + bd}{c^2 + d^2} + i\frac{bc - ad}{c^2 + d^2}$$
+    </div>
+    <h2>Polar coordinates</h2>
+    <p>
+      So far we have determined a point \(z\) on the complex plane by specifying its
+      real and imaginary parts (\(x\) and \(y\) values if you wish), but there are other
+      ways of uniquely defining a point on the plane. Seen as a vector, each complex
+      number has a modulus (its distance to the origin) and it describes an angle with
+      the \(x\)-axis, which we call its argument. These two properties are actually
+      sufficient to determine a single point on the plane and thus we could use them
+      as a coordinate system, which we call <em>polar</em>.
+    </p>
+    <div class="def">
+      Let \(z = a + ib\) be a nonzero complex number. Its <em>modulus</em> \(|z|\) is given by
+      \(\sqrt{a^2 + b^2}\). Its <em>argument</em>, denoted \(\arg z\), is any \(\theta \in \R\)
+      such that \(z = |z| (\cos \theta + i \sin \theta)\).
+    </div>
+    <p>
+      Note that \(\arg z\) is not unique; in fact, if we have such a \(\theta\) then
+      \(\theta + 2\pi\) is also a valid value for \(\arg z\). It will sometimes be useful
+      to restrict \(-\pi < \theta \leq \pi\), then this number is unique and we call it
+      \(\Arg z\). We can then write \(z\) in <em>polar form</em> as \((r, \theta) = (|z|,
+      \Arg z)\).
+    </p>
   </div>
   <h3 class="author">Adrián Doña Mateo</h3>
+
+  <script>
+//     alert(
+// `Screen size: ${window.screen.width} x ${window.screen.height} px
+// devicePixelRatio: ${window.devicePixelRatio}`
+//     )
+    // Check small retina display
+    if (window.devicePixelRatio >= 2 && window.screen.width < 400) {
+      for (const canvas of document.querySelectorAll('.plot canvas')) {
+        canvas.width  *= window.devicePixelRatio
+        canvas.height *= window.devicePixelRatio
+      }
+    }
+
+    let z = new Variable('z')
+    z.set(math.complex(1,1))
+    new Plot(document.querySelector('#intro-plot canvas'), undefined, z)
+    new Display(document.querySelector('#intro-plot span'), z)
+
+    z = new Variable('z')
+    let
+    w = new Variable('w', undefined, undefined, {color:"blue"}),
+    zw = new Variable('zw', 'z * w', [z, w], {color:"green"}),
+    canvases = document.querySelectorAll('#mult-plot canvas'),
+    spans = document.querySelectorAll('#mult-plot span')
+    z.set(math.complex(1))
+    w.set(math.complex(0,1))
+    new Plot(canvases[0], undefined, z)
+    new Plot(canvases[1], undefined, w)
+    new Plot(canvases[2], [zw])
+    new Display(spans[0], z)
+    new Display(spans[1], w)
+    new Display(spans[2], zw)
+
+    z = new Variable('z')
+    let zi = new Variable('zi', 'z * i', [z], {color:"green"})
+    new Plot(document.querySelector('#imult-plot canvas'), [zi], z)
+    spans = document.querySelectorAll('#imult-plot span')
+    new Display(spans[0], z)
+    new Display(spans[1], zi)
+  </script>
 </body>
 </html>
